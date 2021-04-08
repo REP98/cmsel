@@ -1,0 +1,37 @@
+/* RESPONCIVE*/
+
+@media(min-width: 577px){
+	.slider .content .container{
+		justify-content: flex-end;
+	}
+}
+
+@media(max-width: 576px){
+	.slider .duo .descrip,
+	.slider .carousel-caption .extract{
+		display: none !important;
+	}
+
+	.slider .carousel-caption{
+		padding-left: 1.5rem !important;
+		padding-right: 1.5rem !important;
+		text-align: center !important;
+	}
+}
+@media (max-width: 768px){
+	.slider,
+	.slider .carousel-inner,
+	.slider .bd-placeholder-img{
+		min-height: 100vh !important;
+	}
+
+	.slider .content .container{
+		justify-content: center;
+	}
+
+	.slider .duo{
+		left: 25%;
+		right: 25%;
+		padding-right: 0;
+	}
+}

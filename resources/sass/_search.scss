@@ -1,0 +1,16 @@
+/*SEARCH*/
+.search-form{
+	display: inline-flex;
+	width: 100%;
+  	max-width: 25rem;
+  	& input{
+		border-radius: 20px;
+	}
+	& .btn{
+		margin-left: 1.5rem;
+		&:hover,
+		&:focus{
+			opacity: 0.8;		
+		}
+	}
+}

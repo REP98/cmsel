@@ -1,0 +1,31 @@
+/*BOTONES*/
+.btn-text span{
+	font-family: var(--font-family-asap);
+	font-weight: var(--font-weight-bold);
+	font-size: 0.75rem;
+	line-height: 0.9rem;
+	letter-spacing: 0.099em;
+	color: #86858a;
+	text-transform: uppercase;
+	margin-bottom: 1.18rem;
+
+
+	& .btn{
+		width: 2.65rem;
+		height: 2.65rem;
+		transition: all .15s ease-in-out;
+
+		&:focus,
+		&:hover{
+			box-shadow: none;
+			border: 0;
+			opacity: 0.7;
+		}
+	}
+
+	
+
+	&.d-inline-flex{
+		align-items: center;
+	}
+}

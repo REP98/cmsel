@@ -1,0 +1,120 @@
+/* CARD SHOW POST*/
+.card {
+	& a{
+		text-decoration: none !important;
+	}
+	&.single{
+		& .card-img-top{
+			border-radius: 0 !important;
+		}
+		& .card-body{
+			padding: 1.3rem !important;
+			margin-top: -2.25rem;
+			background-color: #fff;
+			margin-left: 1.56rem;
+
+			& .card-time{
+				color: #717175;
+				font-family: var(--font-family-asap);
+				font-size: 0.75rem;
+				line-height: 0.9rem;
+				font-weight: var(--font-weight-regular);
+				text-transform: uppercase;
+				margin-bottom: 0.7rem;
+			  	display: block;
+			}
+
+			& .card-title{
+				color: #201815;
+				font-size: 1.5rem;
+				font-family: var(--font-family-asap-condensed);
+				line-height: 1.8rem;
+				font-style: italic;
+				font-weight: var(--font-weight-semiBold);
+				margin-bottom: 1.3rem;
+			}
+
+			& .card-text{
+				font-size: 1.1875rem;
+				color: #86858a;
+				line-height: 1.425rem;
+				margin-bottom: 1.3rem;
+			}
+
+			& .card-author{
+				position: relative;
+				text-transform: uppercase;
+				&::before{
+					content: "";
+					border-top: 3px solid #d17b53;
+					width: 2.5rem;
+					display: block;
+					margin-bottom: 1rem;
+				}
+				& a{
+					font-family: var(--font-family-asap);
+					font-size: 0.75rem;
+					line-height: 0.9rem;
+					letter-spacing: 0.1em;
+					color: #201815;
+					text-decoration: none !important;
+					font-weight: var(--font-weight-regular);
+				}
+				& a span{
+					font-weight: var(--font-weight-bold);
+				}
+			}
+		}	
+	}
+	&.fullmoder{
+		margin-bottom: 5.625rem;
+		& .card-body{
+			margin-left: 12rem;
+			border: 0;
+			border-left: 1px solid  #332e2d;
+			padding-left: 2rem;
+
+			& .card-title{
+				font-family: var(--font-family-montserrat);
+				font-size: 3.125rem;
+				line-height: 3.75rem;
+				font-style: italic;
+				font-weight: var(--font-weight-extraLight);
+				color: #332e2d !important;
+				margin-bottom: 2rem;
+			}
+
+			& .card-title a{
+				color: #332e2d !important;
+			}
+
+			& .card-time,
+			& .card-author a{
+				font-family: var(--font-family-asap);
+				font-weight: var(--font-weight-regular);
+				font-size: 0.75rem;
+				line-height: 0.9rem;
+				text-decoration: none;
+				text-transform: uppercase;
+				letter-spacing: 0.1em;
+				color: #201815;
+				margin: 0;
+			}
+
+			& .card-time{
+				color: #717175;
+				margin-left: 1rem;
+			}
+
+			& .card-author a span{
+				font-weight: var(--font-weight-bold);
+			}
+
+			& .card-author{
+				width: auto;
+				display: inline-flex;
+			}
+		}
+	}
+}
+

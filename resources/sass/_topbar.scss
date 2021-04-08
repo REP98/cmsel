@@ -1,0 +1,37 @@
+/*TOP BAR*/
+#topbar{
+	height: 2.5rem;
+	width: 100%;
+	border: 0;
+	border-bottom: 0.625rem solid var(--color-dark);
+	overflow: hidden;
+		
+	& img{
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 2.5rem;
+		width: 100%;
+		object-position: center;
+		object-fit: cover;
+		z-index: 1;
+	}
+	& .overlay-topbar{
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 2;
+		background-color: rgba(32,24,21,.3);
+	}
+	& .container{
+		z-index: 4;
+		position: relative;
+		color: #fff;
+		height: 2.5rem;
+	}
+	& .container *{
+		margin-bottom: 0;
+	}
+}

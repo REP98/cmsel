@@ -1,0 +1,30 @@
+/* SOCIAL */
+.social-list{
+	display: inline-flex;
+	padding-left: 0;
+	list-style: none;
+	justify-content: flex-end;
+	
+	& li{
+		width: 1.3rem;
+		height: 1.3rem;
+		&:not(:last-child){
+			margin-right: 0.3rem;
+		}
+		&,
+		& a {
+			width: 1.3rem;
+			height: 1.3rem;
+			font-size: 1.2rem;
+			padding: 0.3rem;
+			color: #fff;
+			transition: all 0.2s ease-in;	
+		}
+		& a{
+			&:focus,
+			&:hover{
+				color: var(--color-orange);
+			}
+		}
+	}
+}

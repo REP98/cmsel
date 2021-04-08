@@ -1,0 +1,75 @@
+/* SECTIONS */
+section.block{
+	display: flex;
+  	flex-direction: column;
+  	padding-top: 3.75rem;
+  	padding-bottom: 3.75rem;
+
+	&.block {
+		& .titlesection{
+			order: 1;
+		}
+		& .btn-text{
+			order: 2;
+			margin-left: auto;
+		  	margin-right: var(--padding-right);
+		  	margin-top: -4rem;
+		  	margin-bottom: 3.75rem;
+		}
+		& .btn-text .btn{
+			background-color: var(--color-orange);
+		  	color: #fff;
+		}
+		&.btn-text .btn i{
+			color: #fff;
+		}
+		& .contents{
+			order: 3;
+			padding-left: var(--padding-left);
+			padding-right: var(--padding-right);
+		}
+	} 
+	&.modern{
+			display: flex;
+		  	flex-direction: column;
+		  	padding-top: 3.75rem;
+		  	padding-bottom: 3.75rem;
+
+		& .titlesection{
+			order: 1;
+		}
+
+		& .contents{
+			order: 2;
+			padding-left: var(--padding-left);
+			padding-right: var(--padding-right);
+		}
+
+		& .btn-text{
+			order: 3;
+			width: 14rem;
+			margin: auto;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding-top: 1.3rem;
+			margin-top: var(--padding-top);
+		}
+
+		& .btn-text .btn{
+			background-color: #9ebbad;
+		  	color: #fff;
+		}
+		& .btn-text .btn i{
+			color: #fff;
+		}
+
+		& .btn-text span{
+			color: #201815 !important;
+		}
+
+		& .card.single .card-body .card-author::before{
+			border-color: #9ebbad !important;
+		}
+	}
+}

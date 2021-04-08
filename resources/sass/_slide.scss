@@ -1,0 +1,146 @@
+/* SLIDERS */
+
+.slider{
+	margin-top: -6.5rem;
+	max-height: 50rem;
+	height: 100vh;
+
+	& .carousel-overlay{
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background-color: rgba(0,0,0,0.3);
+		z-index: 2;
+	}
+	& .content{
+		position: absolute;
+		top: 46%;
+		left: 0;
+		width: 100%;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+		z-index: 3;
+	}
+	& .content .container{
+		display: flex;
+		align-items: flex-start;
+		padding: 0;
+		margin-left: 5rem;
+	}
+
+	& .carousel-caption{
+		width: 100%;
+		max-width: 33.937rem;
+		position: relative !important;
+		right: auto !important;
+		left: auto !important;
+		bottom: auto !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
+
+	& .carousel-caption h1,
+	& .carousel-caption h2{
+		font-family: var(--font-family-asap-condensed);
+		font-size: 2.5rem;
+		line-height: 3rem;
+		font-weight: 600;
+	}
+
+	& .carousel-caption .link-plus,
+	& .carousel-caption .extract{
+		font-family: var(--font-family-asap-condensed);
+		font-size: 1.375rem;
+		line-height: 1.65rem;
+		font-weight: 400;
+	}
+
+	& .carousel-caption .link-plus{
+		color: var(--color-carmesi);
+		display: flex;
+		align-items: center;
+		outline: 0 !important;
+		box-shadow: none !important;
+		padding-left: 0 !important;
+		width: 10rem;
+	}
+
+	& .carousel-caption .link-plus img{
+		margin-right: .5rem;
+	}
+
+	& .bd-placeholder-img{
+		z-index: 0;
+	}
+	& img.bd-placeholder-img{
+		object-fit: cover;
+	}
+	& .carousel-control-next,
+	& .carousel-control-prev{
+		z-index: 5;
+	}
+	&:not(.showvideo) .plyr__controls,
+	&:not(.showvideo) .plyr__control{
+		display: none !important;
+	}
+
+	& .duo{
+		position: absolute;
+		top: 0;
+		left: auto;
+		right: 0;
+		bottom: auto;
+		height: 30vh;
+		z-index: 10;
+		& .content{
+			top: var(--padding-top);
+		}
+		& .carousel-control-prev{
+			transform: translateX(-7rem);
+		}
+		& .carousel-control-next{
+			transform: translateX(-3rem);
+		}
+		& h3,
+		& time{
+			font-family: var(--font-family-asap-condensed);
+			font-size: 1.375rem;
+			line-height: 1.65rem;
+			font-weight: 600;
+		}
+		& time{
+			color: var(--color-carmesi);
+		}
+
+		& .descrip{
+			font-family: var(--font-family-asap-condensed);
+			font-weight: 400;
+			font-size: 1.125rem;
+			line-height: 1.35;
+			text-decoration: underline;
+		}
+	}	
+
+	& .one{
+		z-index: 8;
+	}
+	& .duo{
+		z-index: 10;
+	}
+}
+.arrow-hover {
+	& .carousel-control-next,
+	& .carousel-control-prev{
+		opacity: 0;
+		transition: opacity .15s ease-in-out;
+	}
+	&:hover {
+		& .carousel-control-next,
+		& .carousel-control-prev{
+			opacity: 1;
+		}
+	}
+}
