@@ -5,11 +5,6 @@ addEv(document, 'DOMContentLoaded', () => {
 		slider = querySelectors('.slider'),
 		offCanvas = querySelectors('#offcanvaMenu')
 
-	import ('plyr')
-		.then((plyrvideo) => {
-			console.log(55, plyrvideo);
-		})
-
 	if (plyr.length > 0) {
 		Array.from(plyr).map( (video) => {
 			const dataset = video.dataset;

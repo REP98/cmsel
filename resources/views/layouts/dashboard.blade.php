@@ -50,6 +50,11 @@
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item dropdown">
 						<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+							@if(Gravatar::exists(Auth::user()->email))
+							<img src="{{Gravatar::get(Auth::user()->email, 'small')}}">
+							@else
+							<img src="{{asset('img/avatarwithmask.png')}}" style="width: 32px">
+							@endif
 							{{ Auth::user()->name }}
 						</a>
 

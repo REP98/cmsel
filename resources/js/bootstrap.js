@@ -8,6 +8,7 @@ window._ = require('lodash');
 
 try {
     window.bs = require('bootstrap');
+    window.Plyr = require('plyr');
 } catch (e) {}
 
 /**

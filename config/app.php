@@ -56,6 +56,7 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'mix_url' => env('ASSET_URL', null),
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -174,6 +175,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        
+        // Person
+        Creativeorange\Gravatar\GravatarServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
     ],
 
@@ -228,6 +233,15 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // Person
+        'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
+    ],
+
+    'jsroutes'=>[
+        'name'=>'route.js',
+        'methods'=>['GET','POST'],
+        'include'=>[],
+        'exclude'=>[]
     ],
 
 ];

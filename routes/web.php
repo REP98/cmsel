@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome');
 
 Auth::routes();
-Route::middleware(['auth:sanctum'])->group(function(){
+Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])->group(function(){
 	Route::prefix('dashboard')->group(function(){
 		Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 	});
