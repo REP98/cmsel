@@ -2,9 +2,20 @@
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
+$font-family-sans-serif: 'Asap Condensed', sans-serif;
+$font-size-base: 1rem;
 $line-height-base: 1.6;
+/* PESO DE FUENTES*/
+$font-weight-thin: 100;
+$font-weight-extraLight: 200;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semiBold: 600;
+$font-weight-bold: 700;
+$font-weight-extraBold: 800;
+$font-weight-ultraBold: 900;
+
 
 // Colors
 $blue: #3490dc;
@@ -17,3 +28,18 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+$dark: #201815;
+$dark-alfa: #55595c;
+$gray: #E9E9E9;
+$brom: #B89A6A;
+$carmesi: #ECDAB5;
+$carne: #d17b53;
+
+
+/* RELLENOS */
+$padding-top: 3.125rem ;
+$padding-left: 3.125rem ;
+$padding-bottom: 3.125rem ;
+$padding-right: 3.125rem ;
+
+	
