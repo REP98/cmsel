@@ -12293,55 +12293,55 @@ main::after {
 }
 
 .bg-brom {
-  background-color: #B89A6A !important;
+  background-color: #bc9d6c !important;
 }
 .bg-brom-focusw:focus-within, .bg-brom-hover:hover, .bg-brom-focus:focus, .bg-brom-visited:visited, .bg-brom-active:active {
-  background-color: #B89A6A !important;
+  background-color: #bc9d6c !important;
 }
 .bg-brom-before::before {
-  background-color: #B89A6A !important;
+  background-color: #bc9d6c !important;
 }
 .bg-brom-after::after {
-  background-color: #B89A6A !important;
+  background-color: #bc9d6c !important;
 }
 
 .fg-brom {
-  color: #B89A6A !important;
+  color: #bc9d6c !important;
 }
 .fg-brom-focusw:focus-within, .fg-brom-hover:hover, .fg-brom-focus:focus, .fg-brom-visited:visited, .fg-brom-active:active {
-  color: #B89A6A !important;
+  color: #bc9d6c !important;
 }
 .fg-brom-before::before {
-  color: #B89A6A !important;
+  color: #bc9d6c !important;
 }
 .fg-brom-after::after {
-  color: #B89A6A !important;
+  color: #bc9d6c !important;
 }
 
 .bd-brom {
-  boder-color: #B89A6A !important;
+  boder-color: #bc9d6c !important;
 }
 .bd-brom-focusw:focus-within, .bd-brom-hover:hover, .bd-brom-focus:focus, .bd-brom-visited:visited, .bd-brom-active:active {
-  boder-color: #B89A6A !important;
+  boder-color: #bc9d6c !important;
 }
 .bd-brom-before::before {
-  boder-color: #B89A6A !important;
+  boder-color: #bc9d6c !important;
 }
 .bd-brom-after::after {
-  boder-color: #B89A6A !important;
+  boder-color: #bc9d6c !important;
 }
 
 .ol-brom {
-  outline-color: #B89A6A !important;
+  outline-color: #bc9d6c !important;
 }
 .ol-brom-focusw:focus-within, .ol-brom-hover:hover, .ol-brom-focus:focus, .ol-brom-visited:visited, .ol-brom-active:active {
-  outline-color: #B89A6A !important;
+  outline-color: #bc9d6c !important;
 }
 .ol-brom-before::before {
-  outline-color: #B89A6A !important;
+  outline-color: #bc9d6c !important;
 }
 .ol-brom-after::after {
-  outline-color: #B89A6A !important;
+  outline-color: #bc9d6c !important;
 }
 
 .bg-carmesi {
@@ -12446,6 +12446,10 @@ main::after {
 }
 .ol-carne-after::after {
   outline-color: #d17b53 !important;
+}
+
+[class*=-hover] {
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* RESPONCIVE*/

@@ -25,33 +25,25 @@
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
+                        <div class="form-floating mb-3">
+                            <input id="password" placeholder="{{ __('Contraseña') }}" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                            <label for="password">{{ __('Contraseña') }}</label>
+                        </div>
+                        @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+
+                        <div class="form-floating mb-3">
+                            <input id="password-confirm" placeholder="{{ __('Confirmar Contraseña') }}" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            <label for="password-confirm">{{ __('Confirmar Contraseña') }}</label>
+                        </div>
                         
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn bg-carmesi fg-dark fg-carmesi-hover bg-transparent-hover">
+                                    {{ __('Restablecer la contraseña') }}
                                 </button>
                             </div>
                         </div>

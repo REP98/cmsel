@@ -49,7 +49,7 @@
 						</div>
 
 						<div class="form-group row mb-0">
-							<div class="col-md-6 mt-1 w-100 text-center">
+							<div class="col-md-12 mt-1 w-100 text-center">
 								<button type="submit" class="btn bg-carmesi fg-dark fg-carmesi-hover bg-transparent-hover">
 									{{ __('Registrarce') }}
 								</button>

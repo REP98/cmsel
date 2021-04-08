@@ -1,54 +1,15 @@
 require('./bootstrap');
 
-/**
- * Constantes y Variables
- */
-const uri = location.origin,
-	MOfn = (target, options, callback) => {
-		let MO = new MutationObserver((mutationList, observer) => {
-			mutationList.forEach( mutation => {
-				/*switch (mutation.type) {
-					case 'childList':
-						
-						 Observa y ejecuta Mutaciones en uno o mas hijos del DOM
-						 cuando son añadidos o eliminados.
-						 
-					
-					break;
-					case 'attributes': 
-					 	
-					 	Observa cuando el valor de un atributo en el mutation.target ha cambiado
-					 	 
-					 	
-					break;
-				}*/
-				if (typeof callback === 'function') {
-					callback.apply(null,[mutation,observer])
-				}
-			});	
-		});
-		return MO.observe(target, options)
-	},
-	ObserverOptions = {
-		childList: true,
-		attributes: true,
-		subtree: true
-	}
-
-window.querySelectors = (selector, context = document) => {
-	return context.querySelectorAll(selector).length > 1 ? 
-		context.querySelectorAll(selector) :
-		context.querySelector(selector) != null ? [context.querySelector(selector)]: []
-}
-
-window.addEv = (el, events, callback, capture = false) =>  {
-	el.addEventListener(events, callback, capture)
-}
-
-addEv(document, () => {
+addEv(document, 'DOMContentLoaded', () => {
 	const plyr = querySelectors('[data-role*="plyr"]'),
-		slider = querySelector('.slider'),
-		offCanvas = querySelector('#offcanvaMenu')
+		slider = querySelectors('.slider'),
+		offCanvas = querySelectors('#offcanvaMenu')
+
+	import ('plyr')
+		.then((plyrvideo) => {
+			console.log(55, plyrvideo);
+		})
+
 	if (plyr.length > 0) {
 		Array.from(plyr).map( (video) => {
 			const dataset = video.dataset;
@@ -63,10 +24,10 @@ addEv(document, () => {
 	}
 
 	if (slider.length > 0) {
-		const listVideo = querySelector(".plyr", slider[0]);
+		const listVideo = querySelectors(".plyr", slider[0]);
 		if (listVideo.length > 0) {
 			Array.from(listVideo).map((plyr) => {
-				let video = querySelector("video", plyr)[0];
+				let video = querySelectors("video", plyr)[0];
 				MOfn(plyr.parentNode, {
 					childList: true,
 					attributes: true,
@@ -91,9 +52,9 @@ addEv(document, () => {
 	Menú
 	 */
 	if (offCanvas.length > 0) {
-		const timesOffC = querySelector('.btn-close', offCanvas[0]),
-			navLinkOffC = querySelector('.nav-link', offCanvas[0]),
-			menuButton = querySelector('.togglemenu'),
+		const timesOffC = querySelectors('.btn-close', offCanvas[0]),
+			navLinkOffC = querySelectors('.nav-link', offCanvas[0]),
+			menuButton = querySelectors('.togglemenu'),
 			offMenu = new bs.Offcanvas(offCanvas[0])
 
 		addEv(menuButton[0], 'click', (e) => {
