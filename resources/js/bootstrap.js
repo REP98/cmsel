@@ -9,6 +9,7 @@ window._ = require('lodash');
 try {
     window.bs = require('bootstrap');
     window.Plyr = require('plyr');
+    window.Route = require('./routes.js').route;
 } catch (e) {}
 
 /**

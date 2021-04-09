@@ -6,10 +6,12 @@
 3. Clone el archivo <u>.env.example</u> y renombrelo a <u>.env</u>
 4. Configure su base de datos en el archivo <u>.env</u>
 5. Ejecute en la consola o terminal lo siguiente
-	- `composer install`
-	- `php artisan migrate`
-	- `php artisan db:seed`
-	- `npm i`
+	- `composer install` Instalamos las Dependencias
+	- `php artisan migrate` Migramos la Base de Datos
+	- `php artisan db:seed` Migramos los datos por defecto del sistema
+	- `php artisan storage:link` Publicamos a Storage para tener acceso desde public
+	- `php artisan route:tojs` Pasamos las rutas de web.php a routes.js
+	- `npm i` Instalamos las dependencias del Front-END
 	- `npm run dev` ó `npm run prod` dev para desarrollo o prod para producción
 6. Acceda a su navegador y compruebe que no hayan problemas
 
