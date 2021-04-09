@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => "Admin",
-            'email' => 'admin@'.preg_replace('/([https|http]+\:\/\/)/m', '', env('APP_URL')),
+            'email' => 'admin@cms.com',
             'password' => Hash::make('Webmaster18*/')
         ])->assignRole('SuperAdmin');
 

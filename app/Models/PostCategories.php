@@ -4,7 +4,8 @@ namespace App\Models;
 
 use DateTimeInterface;
 use App\Models\PostModel;
-use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PostCategories extends Model
 {
-    use  Sluggable, HasFactory;
+    use  HasSlug, HasFactory;
 
     protected $fillable = [
     	'cat_type',
@@ -40,13 +41,15 @@ class PostCategories extends Model
         return $this->belongsToMany(PostModel::class);
     }
 
-    public function sluggable(): array
-	{
-		return [
-			'slug_cat' => [
-				'source' => 'title',
-				'onUpdate' => true
-			]
-		];
-	}
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::cretate()
+            ->generateSlugsFrom('categories')
+            ->saveSlugsTo('slug_cat');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug_cat';
+    }
 }

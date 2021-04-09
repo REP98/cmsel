@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RouterAndPermissionSeeder::class,
 	        UserSeeder::class,
+            SettingsSeeder::class,
 	    ]);
     }
 }

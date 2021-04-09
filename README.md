@@ -12,6 +12,7 @@
 	- `php artisan storage:link` Publicamos a Storage para tener acceso desde public
 	- `php artisan route:tojs` Pasamos las rutas de web.php a routes.js
 	- `npm i` Instalamos las dependencias del Front-END
+	- `npm update` solo si ya tenemos un repositorio anterior luego de instalar las dependecias es recomendable actualizar las pre-existentes
 	- `npm run dev` ó `npm run prod` dev para desarrollo o prod para producción
 6. Acceda a su navegador y compruebe que no hayan problemas
 
@@ -21,6 +22,12 @@ Ejecute lo siguiente dentro de la carpeta del proyecto
 
 1. `sudo chmod -R 0777 .`
 2. `sudo chown -R user:www-data .` reemplaze user por el su nombre de usuario
+
+## NOTAS ##
+
+Por poblemas de incompativilidades con laravel se removio el paquete <u>cviebrock/eloquent-sluggable</u> Ejecute
+el siguinete comando para removerlo si lo tiene instalado dentro de su carpeta vendor.
+- `composer remove cviebrock/eloquent-sluggable`
 
 ## Entorno ##
 

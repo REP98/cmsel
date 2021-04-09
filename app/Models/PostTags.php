@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-
 use App\Models\PostModel;
-use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class PostTags extends Model
 {
-    use Sluggable, HasFactory;
+    use HasSlug, HasFactory;
 
     public $incrementing = true;
 
@@ -27,13 +27,15 @@ class PostTags extends Model
         return $this->belongsToMany(PostModel::class);
     }
 
-    public function sluggable(): array
-	{
-		return [
-			'slug_tag' => [
-				'source' => 'title',
-				'onUpdate' => true
-			]
-		];
-	}
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::cretate()
+            ->generateSlugsFrom('tag')
+            ->saveSlugsTo('slug_tag');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug_tag';
+    }
 }

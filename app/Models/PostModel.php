@@ -6,7 +6,9 @@ use DateTimeInterface;
 use App\Models\User;
 use App\Models\PostCategories;
 use App\Models\PostTags;
-use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\Style;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PostModel extends Model
 {
-	use Sluggable, HasFactory;
+	use HasSlug, HasFactory;
 
 	public $incrementing = true;
 
@@ -25,12 +27,13 @@ class PostModel extends Model
 		'post_slug',
 		'post_img',
 		'status_post',
-		'post_categories',
-		'post_tags',
+		'post_categorie_id',
+		'style_id',
+		'post_tag_id',
 		'post_content',
-		'post_autor',
+		'user_id',
 		'resumen_post',
-		'comment_status'
+		'comment_id'
 	];
 
 
@@ -45,18 +48,25 @@ class PostModel extends Model
         return $this->belongsToMany(PostTags::class);
     }
 
+    public function styles(): BelongsToMany
+	{
+		return $this->belongsToMany(Style::class);
+	}
+
 	public function PostAutor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'post_autor');
+        return $this->belongsTo(User::class);
     }
 
-	public function sluggable(): array
+	public function getSlugOptions(): SlugOptions
 	{
-		return [
-			'post_slug' => [
-				'source' => 'title',
-				'onUpdate' => true
-			]
-		];
+		return SlugOptions::cretate()
+			->generateSlugsFrom('post_title')
+            ->saveSlugsTo('post_slug');
+	}
+
+	public function getRouteKeyName()
+	{
+		return 'post_slug';
 	}
 }

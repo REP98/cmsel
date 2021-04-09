@@ -20,16 +20,17 @@ class CreatePostModelsTable extends Migration
             $table->string('post_slug');
             $table->json('post_img')->nullable();
             $table->integer('status_post')->default(1);
-            $table->foreignId('post_categories');
-            $table->foreignId('post_tags');
+            $table->foreignId('post_categorie_id');
+            $table->foreignId('style_id');
+            $table->foreignId('post_tag_id');
             $table->text('post_content')->nullable();
-            $table->foreignId('post_autor')
+            $table->foreignId('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('no action')
                 ->onDelete('no action');
             $table->text('resumen_post');
-            $table->foreignId('comment_status')->default(1);
+            $table->foreignId('comment_id');
             $table->index('post_slug');
             $table->timestamps();
         });

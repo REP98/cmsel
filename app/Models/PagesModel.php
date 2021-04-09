@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use DateTimeInterface;
+
 use App\Models\User;
-use Cviebrock\EloquentSluggable\Sluggable;
+use App\Models\Style;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PagesModel extends Model
 {
-    use Sluggable, HasFactory;
+    use HasSlug, HasFactory;
 
     protected $fillable = [
         'slug',
@@ -20,7 +23,8 @@ class PagesModel extends Model
         'title',
         'description',
         'content',
-        'page_autor'
+        'style_id',
+        'user_id'
     ];
 
 
@@ -36,16 +40,23 @@ class PagesModel extends Model
 
     public function PostAutor(): BelongsTo
     {
-        return $this->belongsTo(User::class,'page_autor');
+        return $this->belongsTo(User::class);
     }
 
-    public function sluggable(): array
+    public function styles(): BelongsToMany
     {
-        return [
-            'slug' => [
-                'source' => 'title',
-                'onUpdate' => true
-            ]
-        ];
+        return $this->belongsToMany(Style::class);
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::cretate()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }
