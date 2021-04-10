@@ -63,7 +63,7 @@ class User extends Authenticatable
        return $this->hasMany(Template::class);
     }
 
-    protected function serializeDate(DateTimeInterface $data) {
+    protected function serializeDate(DateTimeInterface $date) {
         return $date->format('Y-m-d H:i:s');
     }
 }

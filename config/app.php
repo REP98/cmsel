@@ -179,6 +179,7 @@ return [
         // Person
         Creativeorange\Gravatar\GravatarServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 
@@ -235,6 +236,7 @@ return [
 
         // Person
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class
     ],
 
     'jsroutes'=>[

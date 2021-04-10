@@ -1,5 +1,5 @@
 @php
-    $user = auth()->user();
+    $user = Auth::user();
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -13,6 +13,10 @@
 	<title>Dashboard {{ config('app.name', 'Laravel') }}</title>
 
 	<!-- Scripts -->
+	<script defer>
+		window.uri = `{{url('/')}}`
+		window.user = @json($user)
+	</script>
 	<script src="{{ asset('js/dash.js') }}" defer></script>
 
 	<!-- Fonts -->
@@ -30,7 +34,49 @@
 </head>
 <body>
 	<div class="wrapper">
-		<nav class="sidebar" id="sidebar"></nav>
+		<nav class="sidebar open" id="sidebar">
+			<div class="brand">
+				<img src="{{asset($setting['img']->logo)}}" class="logo" alt="{{$setting['config']->title}}">
+			</div>
+			<nav class="nav flex-column">
+				@foreach($setting['config']->menu as $n => $v)
+					@php
+						$url = $v->url;
+						if (is_array($v->url) || is_object($v->url)) {
+							$url = route($v->url[0], (array) $user[$v->url[1]]);
+						}
+					@endphp
+					@can($v->level)
+						@if(property_exists($v, 'submenu'))
+						<div class="nav-item dropdown" style="order: {{$v->order}}">
+							<a href="{{$url}}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+							<span>{{$n}}</span>
+							</a>
+							<ul class="dropdown-menu">
+								@foreach($v->submenu as $sn => $fv)
+								@php
+									$surl = $fv->url;
+									if (is_array($fv->url) || is_object($fv->url)) {
+										$surl = route($fv->url[0], (array) $user[$fv->url[1]]);
+									}
+								@endphp
+									@can($fv->level)
+										<li><a class="dropdown-item" href="{{$surl}}"><span>{{$sn}}</span></a></li>
+									@endcan
+								@endforeach
+							</ul>
+						</div>
+						@else
+						<div class="nav-item">
+							<a href="{{$v->url}}" class="nav-link" role="button" aria-expanded="false">
+							{{$n}}
+							</a>
+						</div>
+						@endif				
+					@endcan
+				@endforeach
+			</nav>
+		</nav>
 		<div class="main">
 			<header class="navbar navbar-expand navbar-light navbar-bg">
 				<a class="sidebar-toggle">
@@ -49,20 +95,24 @@
 				@endif
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item dropdown">
-						<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-							@if(Gravatar::exists(Auth::user()->email))
-							<img src="{{Gravatar::get(Auth::user()->email, 'small')}}">
+						<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-role="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+							{{-- @if(Gravatar::exists(Auth::user()->email))
+							<img src="{{Gravatar::get(Auth::user()->email, 'small')}}" class="profile-gravatar">
 							@else
-							<img src="{{asset('img/avatarwithmask.png')}}" style="width: 32px">
-							@endif
-							{{ Auth::user()->name }}
+							<img src="{{asset($setting['img']->avatar)}}" class="profile-gravatar">
+							@endif --}}
+							<img src="{{asset($setting['img']->avatar)}}" class="profile-gravatar">
+							<span>{{ $user->name }}</span>
 						</a>
 
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+							<a href="{{ route('user.profile', $user->id)}}" class="dropdown-item">
+								{{ __('Perfil') }}
+							</a>
 							<a class="dropdown-item" href="{{ route('logout') }}"
 							   onclick="event.preventDefault();
 											 document.getElementById('logout-form').submit();">
-								{{ __('Logout') }}
+								{{ __('Salir') }}
 							</a>
 
 							<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

@@ -13,6 +13,7 @@
         "@popperjs/core": "^2.9.2",
         "axios": "^0.21",
         "bootstrap": "^5.0.0-beta3",
+        "camelcase": "^6.2.0",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
@@ -21,6 +22,7 @@
         "sass-loader": "^8.0.0"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^27.0.0",
         "codemirror": "^5.60.0",
         "plyr": "^3.6.4"
     }
