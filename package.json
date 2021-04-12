@@ -10,20 +10,22 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@ckeditor/ckeditor5-inspector": "^2.2.2",
         "@popperjs/core": "^2.9.2",
         "axios": "^0.21",
         "bootstrap": "^5.0.0-beta3",
         "camelcase": "^6.2.0",
-        "laravel-mix": "^6.0.6",
-        "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
+        "laravel-mix": "^6.0.16",
+        "lodash": "^4.17.21",
+        "moment": "^2.29.1",
+        "postcss": "^8.2.9",
         "resolve-url-loader": "^3.1.2",
-        "sass": "^1.15.2",
-        "sass-loader": "^8.0.0"
+        "sass": "^1.32.8",
+        "sass-loader": "^11.0.1"
     },
     "dependencies": {
-        "@ckeditor/ckeditor5-build-classic": "^27.0.0",
         "codemirror": "^5.60.0",
-        "plyr": "^3.6.4"
+        "plyr": "^3.6.4",
+        "simple-datatables": "^3.0.2"
     }
 }

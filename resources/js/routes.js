@@ -40,6 +40,66 @@ const routes = {
     },
     "dashboard": {
         "uri": "dashboard"
+    },
+    "editors": {
+        "uri": "dashboard\/editor"
+    },
+    "page.index": {
+        "uri": "dashboard\/page"
+    },
+    "page.create": {
+        "uri": "dashboard\/page\/create"
+    },
+    "page.store": {
+        "uri": "dashboard\/page"
+    },
+    "page.show": {
+        "uri": "dashboard\/page\/{page}"
+    },
+    "page.edit": {
+        "uri": "dashboard\/page\/{page}\/edit"
+    },
+    "post": {
+        "uri": "dashboard\/post"
+    },
+    "post.new": {
+        "uri": "dashboard\/post\/new"
+    },
+    "post.category": {
+        "uri": "dashboard\/post\/categorys"
+    },
+    "post.tag": {
+        "uri": "dashboard\/post\/tags"
+    },
+    "template": {
+        "uri": "dashboard\/template"
+    },
+    "template.header": {
+        "uri": "dashboard\/template\/header"
+    },
+    "template.section": {
+        "uri": "dashboard\/template\/sections"
+    },
+    "template.footer": {
+        "uri": "dashboard\/template\/footer"
+    },
+    "template.widget": {
+        "uri": "dashboard\/template\/widget"
+    },
+    "user": {
+        "uri": "dashboard\/user"
+    },
+    "user.profile": {
+        "uri": "dashboard\/user\/profile\/{id}"
+    },
+    "user.new": {
+        "uri": "dashboard\/user\/new"
+    },
+    "user.permissions": {
+        "uri": "dashboard\/user\/permissions"
+    },
+    "setting": {
+        "uri": "dashboard\/setting"
     }
 };
 

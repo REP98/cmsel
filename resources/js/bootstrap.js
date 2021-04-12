@@ -1,23 +1,237 @@
 window._ = require('lodash');
 
-import camelCase from 'camelcase'
-import Selector from './kernel/selector.js'
-import Utils from './kernel/utils.js'
-import DS from './kernel/data.js'
-window.Utils = Utils
-window.Data = new DS('core')
+const Fascino = require('./Fascino/fascino.js');
+
+import { DataTable } from "simple-datatables"
+import moment from 'moment'
+
+window.moment = moment
+
+const bs = require('bootstrap');
+
+_$.Plyr = require('plyr');
+_$.Route = require('./routes.js').route;
+
+
+_$.each(bs, (n, i) => {
+	if (!_$.hasProp(_$().__proto__, i.toLowerCase())) {
+		_$().__proto__[i.toLowerCase()] = function(...args) {
+			return this.each( (el) => {
+				let bs = new n(el, ...args)
+				_$(el).data(i, bs)
+			})
+		}
+	}
+})
+
 
 /**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
+ * Convierte el JSON exportado por laravel atravez de la 
+ * funcion Blade @json a una tabla
+ * @param {HTMLTable} el        La tabla padre
+ * @param {Array} data      Matriz de Datos
+ * @param {Array}  exclude   Matriz con datos a excluir como id, slug ...
+ * @param {Object} transform Objecto con el renombre de datos identificado como clave=>valor donde clave es el nombre existente
+ * @return {HTMLTable}
  */
+function setDataFromJson(el, data, exclude = [], transform = {}) {
+	console.log(data, exclude, transform)
 
-try {
-    window.bs = require('bootstrap');
-    window.Plyr = require('plyr');
-    window.Route = require('./routes.js').route;
-} catch (e) {}
+	if (_$.empty(el) || _$.empty(data)) {
+		return el
+	}
+
+	if (_$.isObject(exclude)) {
+		transform = exclude
+		exclude = []
+	}
+
+	exclude = _$.merge(['slug', 'id'], exclude)
+
+	let t = _$(el),
+		thead = t.find('thead'), 
+		tbody = t.find('tbody')
+
+	if (thead.length === 0) {
+		t.prepend('<thead>')
+		thead = t.find('thead')
+	}
+
+	if (tbody.length === 0) {
+		t.append('<tbody>')
+		tbody = t.find('tbody')
+	}
+
+	let tr = thead.find('tr').length === 0 ? thead.append('<tr>') : thead.find('tr')
+
+	Object.keys(data[0]).forEach( (name, index) => {
+		if (name.indexOf('slug') === -1 && exclude.indexOf(name) === -1) {
+			let th = _$('<th>')
+			if (['created_at', 'updated_at', 'date'].indexOf(name) > -1) {
+				name = 'fecha'
+				th.data({
+					type: 'date',
+					format: 'DD/MM/YYYY'
+				})
+			}
+
+			if (name in transform) {
+				name = transform[name]
+			}
+
+			th.text(name)
+			thead.find('tr').append(th.Elem[0])
+		}
+		
+	});
+
+	data.forEach( (table) => {
+		let trb = _$('<tr>')
+			trb.attr('id', 'id' in table ? table.id : _$.uniqueId('table'))
+		_$.each(table, (valore, n) => {
+			if (n.indexOf('slug') === -1 && exclude.indexOf(n) === -1) {
+				let td = _$('<td>')
+				if (['created_at', 'updated_at', 'date'].indexOf(n) > -1) {
+					let date = moment(valore)
+					if (date.isValid()) {
+						valore = date.format('DD/MM/YYYY HH:mm')
+					}
+				}
+				td.html(valore)
+				td.appendTo(trb.Elem[0])
+			}
+		})
+		trb.appendTo(tbody.Elem[0])
+	})
+
+	return t.Elem[0]
+}
+
+/**
+ * Integra dataTable Plugins a FascinoJS
+ * @param  {Object} options Opciones validas para simple-dataTable
+ * @return {FascinoJS}         Retorna la tabla en Objecto Fascino
+ */
+_$().__proto__.dataTable = function(options){
+
+	if (this.length === 0) {
+		return
+	}
+
+	const opt = {
+		sortable: true,
+		searchable: true,
+
+		// Pagination
+		paging: true,
+		perPage: 10,
+		perPageSelect: [5, 10, 15, 20, 25, 50, 100],
+		nextPrev: true,
+		firstLast: false,
+		prevText: "&lsaquo;",
+		nextText: "&rsaquo;",
+		firstText: "&laquo;",
+		lastText: "&raquo;",
+		ellipsisText: "&hellip;",
+		ascText: "▴",
+		descText: "▾",
+		truncatePager: true,
+		pagerDelta: 2,
+
+		scrollY: "",
+
+		fixedColumns: true,
+		fixedHeight: false,
+
+		header: true,
+		hiddenHeader: false,
+		footer: false,
+		columns: [],
+		labels: {
+			placeholder: "Buscar...",
+			perPage: "{select} Páginas mostradas",
+			noRows: "No hay paginas a mostrar",
+			info: "{start}/{end} de {page} Páginas",
+		},
+		layout: {
+			top: "{search}{select}",
+			bottom: "{info}{pager}"
+		}
+	}
+
+	return this.each((el) => {
+		let o = _$.extend({}, opt, options)
+			o = _$.extend({}, o, _$(el).data() || {})
+
+		if (_$(el).hasData('data')) {
+			el = setDataFromJson(
+				el,
+				 _$.normalizeData(_$(el).data('data')), 
+				 _$.normalizeData(_$(el).data('exclude') || []), 
+				 _$.normalizeData(_$(el).data('transform') || {})
+			)
+		}
+
+		if (_$(el).hasData('checkbox')) {
+			_$(el).find('thead tr').prepend('<th>')
+			_$(el).find('tbody tr').prepend('<td>')
+
+			if (_$.empty(o.columns)) {
+				o.columns = Array.from('')
+			}
+			o.columns.push({
+				select: 0,
+				sortable:false,
+				render: function(data, cell, row){
+					return `<div class="form-check">
+						<input type="checkbox" class="form-check-input cellcheck"/>
+						<label class="form-check-label">${data}</label>
+					</div>
+					`
+				}
+			})
+		}
+
+		if (_$(el).hasData('actions')) {
+			_$(el).find('thead tr').append('<th>')
+			_$(el).find('tbody tr').each(tr => {
+				_$(tr).append('<td>')
+			})
+			if (_$.empty(o.columns)) {
+				o.columns = Array.from('')
+			}
+			o.columns.push({
+				select: _$(el).find('thead tr th').length - 1,
+				sortable:false,
+				render: function(data, cell, row){
+					let id = _$(row).attr('id')
+					return `<div class="actions d-flex justify-content-center w-100">
+					<a href="${_$.Route('page.edit', [id])}" class="fg-dark fg-green-hover">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+					</a>
+					<a href="#popupdelete?delete=${id}" class="fg-dark fg-red-hover">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash align-middle"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+					</a>
+					</div>
+					`
+				}
+			})
+		}
+
+		let dt = new DataTable(el, o)
+
+		// Agregamos un gancho para su uso desde el front-end
+		_$.hooks.run('table.init', el, dt)
+
+		_$(el).data('dataTable', dt)
+	});
+}
+
+window.$ = window._$
+
+window.$.fn = _$().__proto__
+
+global.$ = $
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -47,85 +261,7 @@ window.axios.defaults.withCredentials = true;
 //     forceTLS: true
 // });
 
-/**
- * Selecciona el elemento por selector CSS
- * @param  {String|HTMLElement} selector el selector o elemento
- * @param  {Element} context  padre principal del selector
- * @return {Array}
- */
-window.querySelectors = (selector, context = document) => {
-	return new Selector(selector, context).Elem;
-}
-
-/**
- * Private Function normName
- * regula y normalize el nombre de un atributo, funcion, o variable para su uso en javascript
- * @private
- * @param  {String} name variable
- * @return {String|void}  el nombre normalizado o indefinido
- */
-function normName(name) {
-	return typeof name !== 'string' ? undefined : name.replace(/-/g, '').toLowerCase()
-}
-/**
- * Private Function normalizeData
- * combiente los datos tipo texto JSON pasados por attributos a un objecto valido
- * @private
- * @param  {String} data
- * @return {Object} El objeto JSON
- */
-function normalizeData(data) {
-	try {
-		return JSON.parse(data)
-	} catch (e) {
-		return data
-	}
-}
-
-/**
- * Private Function normalizeElements
- * Valida y obtiene un elemento dado
- * @private
- * @param  {String|Array|Object Fascino} s
- * @return {Object|Element|Array|undefined}   El elemento en su expresion para su uso
- */
-function normalizeElements(s) {
-	let result
-	if (Utils.isString(s)) {
-		result = Utils.isSelector(s) ? querySelectors(s) : Utils.parseHTML(s)
-	} else if (Utils.isElement(s)) {
-		result = [s]
-	} else if (Utils.isArrayish(s)) {
-		result = s
-	}
-	return result
-}
-/**
- * Private Function dataAttr
- * @private
- * @param  {Object} DS   Object DATA
- * @param  {Element} elem Elemento a manipular
- * @param  {String} key  La clave del atributto data ejemplo data-valor; key = valor
- * @param  {Object|String|Array} data El resultado del atributo data
- * @return {Object|undefine|Array}  El resultado del atributo data obtenido
- */
-function dataAttr(DS, elem, key, data) {
-	let name
-
-	if (Utils.empty(data) && elem.nodeType === 1) {
-		name = 'data-' + key.replace(/[A-Z]/g, '-$&').toLowerCase()
-		data = elem.getAttribute(name)
-
-		if (typeof data === 'string') {
-			data = normalizeData(data)
-			DS.set(elem, key, data)
-		} else {
-			data = undefined
-		}
-	}
-	return data
-}
-
+/*
 const uri = location.origin,
 	MOfn = (target, options, callback) => {
 		let MO = new MutationObserver((mutationList, observer) => {
@@ -139,12 +275,12 @@ const uri = location.origin,
 					
 					break;
 					case 'attributes': 
-					 	
-					 	Observa cuando el valor de un atributo en el mutation.target ha cambiado
-					 	 
-					 	
+						
+						Observa cuando el valor de un atributo en el mutation.target ha cambiado
+						 
+						
 					break;
-				}*/
+				}
 				if (typeof callback === 'function') {
 					callback.apply(null,[mutation,observer])
 				}
@@ -158,94 +294,6 @@ const uri = location.origin,
 		subtree: true
 	}
 
-
-
-window.addEv = (el, events, callback, capture = false) =>  {
-	el.addEventListener(events, callback, capture)
-}
-
-window.attr = (el, ...args) => {
-	if (Utils.empty(el)) {
-		return 
-	}
-	if (Utils.empty(args)) {
-		if (el.hasAttributes()) {
-			let Attr = el.attributes;
-			Array.from(Attr).forEach( (a) => {
-				el.setAttribute(a.nodeName, a.nodeValue)
-			});
-			return Attr;
-		}
-		return el
-	}
-
-	if (args.length == 1) {
-		if (Utils.isObject(args[0])) {
-			querySectors(el).forEach( (e) => {
-				for (let i in args[0]) {
-					if( Utils.hasProp(args[0], i)) {
-						let value = normalizeData(args[0][i])
-						if (i in e) {
-							e[i] = value;
-						} else {
-							e.setAttribute(i, value)
-						}
-					}
-				}
-			})
-		} else if (Utils.isString(args[0])) {
-			return el.hasAttributes(args[0]) ? el.getAttribute(args[0]) : false
-		} else if (Utils.isFunction(args[0])) {
-			querySectors(el).forEach( (e) => {
-				if (e.hasAttribute()) {
-					let a = el.attributes
-					a.forEach((attr) => {
-						args[0].call(el, [attr.nodeName, attr.nodeValue, attr])
-					})
-				}
-			})
-		}
-	}
-
-	querySectors(el).forEach( (e) => {
-		let key = args[0],
-			value = normalizeData(args[1])
-			if (key in e) {
-				e[key] = value
-			} else {
-				e.setAttribute(key, value)
-			}
-	})
-	return el
-}
-
-const getData = (el, key) => {
-
-	if (Utils.empty(key)) {
-		let DS = Data.get(el)
-		if (el.nodeType === 1) {
-			let attributes = el.attributes,
-				i = attributes.length
-			while (i--) {
-				if (i in attributes) {
-					if (attributes[i].name.indexOf('data-') === 0) {
-						let name = camelCase(attributes[i].name.slice( 5 ))
-						dataAttr(Data, el, name, DS[name])
-					}
-				}
-			}
-		}
-		return DS
-	}
-
-	let DS = Data.get(el, key)
-	if (Utils.empty(DS)) {
-		if (el.nodeType === 1) {
-			DS = el.hasAttributes(`data-${args[0]}`) ? el.getAttribute(`data-${args[0]}`) : DS
-		}
-	}
-	return DS
-}
 
 window.actions = (sel, type, callback) => {
 	if (typeof sel !== 'string') {
@@ -279,9 +327,9 @@ window.actions = (sel, type, callback) => {
 						
 							if (Utils.hasProp(bs, cRol)) {
 								let EvBs = new bs[cRol](e)
-								Data.set(el, rol, EvBs)
+								Data.set(e, rol, EvBs)
 								if (Utils.isFunction(callback)) {
-									callback(el, EvBs, rol)
+									callback(e, EvBs, rol)
 								}
 							}
 					});
@@ -289,7 +337,19 @@ window.actions = (sel, type, callback) => {
 				}
 			})
 		}
+		if (type === 'dt') {
+			var i = 0;
+			
+			el.forEach( (e) => {
+				const dataset = getData(e)
+				let o = Utils.extend({}, opt, dataset)
+				const DT = new DataTable(e, o)
+				Data.set(e, 'DataTable', DT)
+			})
+		}
 	}
 
-}
+}*/
+
+
 

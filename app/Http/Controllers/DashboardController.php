@@ -20,12 +20,12 @@ class DashboardController extends Controller
 /*
     	$this->Setting->setConfig('menu', [
     		'Página'=>[
-    			'url'=>route('page'),
+    			'url'=>route('page.index'),
     			'level' => 'ap_page read',
     			'order' => 1,
     			'submenu'=> [
     				'Nueva' => [
-    					'url' => route('page.new'),
+    					'url' => route('page.create'),
     					'level' => 'ap_page create'
     				]
     			]
@@ -107,4 +107,10 @@ class DashboardController extends Controller
 */
     	return view('dashboard.index', ['setting' => $this->Setting->get()]);
     }
+
+    public function test($view){
+
+        return view($view, ['setting' => $this->Setting->get()]);
+    }
+
 }

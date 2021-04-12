@@ -3,7 +3,15 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/monokai.css';
+@import '~codemirror/addon/fold/foldgutter.css';
+@import '~codemirror/addon/hint/show-hint.css';
+@import '~codemirror/addon/dialog/dialog.css';
+@import '~codemirror/addon/search/matchesonscrollbar.css';
+@import '~codemirror/addon/scroll/simplescrollbars.css';
+@import '~codemirror/addon/display/fullscreen.css';
+@import 'color';
 
 /* VARIABLES*/
 :root{
@@ -90,6 +98,9 @@ body{
 	align-items: stretch;
 	display: flex;
 	width: 100%;
+	& .container-fluid{
+		min-height: 100%;
+	}
 }
 
 .main{
@@ -113,6 +124,25 @@ footer.footer{
 	padding: 1rem .75rem;
 	direction: ltr;
 }
+.sidebar{
+	@media (max-width: 991px) {
+		&.open{
+			margin-left: -16.25rem;
+			position: relative !important;
+		}
+		.modal.code .modal-content{
+			width: 80vw
+		}
+	}
+	@media (min-width: 992px) {
+		&:not(.open){
+			margin-left: -16.25rem;
+			position: relative !important;
+		}
+	}
+
+}
+
 
 .sidebar{
 	min-width: 16.25rem;
@@ -133,11 +163,6 @@ footer.footer{
 	align-items: flex-start;
 	overflow: hidden;
 	z-index: 1040;
-
-	&:not(.open){
-		margin-left: -16.25rem;
-		position: relative !important;
-	}
 
 	& .brand{
 		padding: 0.875rem 1.25rem;
@@ -210,6 +235,8 @@ footer.footer{
 	    			border-radius: 0;
 	    			background-color: rgba(#fff, .5);
 	    			color: #293042;
+	    			inset: 0 auto auto 0;
+	    			margin: 0;
 
 	    			& .dropdown-item{
 	    				background-color: transparent !important;
@@ -268,6 +295,128 @@ footer.footer{
 		top: 3rem;
 	}
 }
+
+.dataTable-wrapper{
+	@extend .table-responsive;
+
+	& .dataTable-sorter {
+		display: inline-block;
+		height: 100%;
+		position: relative;
+		width: 100%;
+
+		&::before,
+		&::after {
+			content: "";
+			height: 0;
+			width: 0;
+			position: absolute;
+			right: 4px;
+			border-left: 4px solid transparent;
+			border-right: 4px solid transparent;
+			opacity: 0.2;
+		}
+
+		&::before {
+			border-top: 4px solid #000;
+			bottom: 0px;
+		}
+
+		&::after {
+			border-bottom: 4px solid #000;
+			border-top: 4px solid transparent;
+			top: 0px;
+		}
+	}
+
+	& .asc .dataTable-sorter::after,
+	& .desc .dataTable-sorter::before {
+		opacity: 0.6;
+	}
+
+	& .dataTable-top{
+		display: flex;
+		align-content: center;
+		justify-content: space-between;
+
+		& .dataTable-dropdown{
+			@extend .dropdown;
+		}
+
+		& .dataTable-selector{
+			@extend .form-select;
+		}
+
+		& > label{
+			display: flex;
+			order: 2;
+		}
+
+		& .dataTable-input{
+			@extend .form-control;
+		} 
+	}
+
+	& .dataTable-container{
+		& .dataTable-table{
+			@extend .table;
+
+			& thead {
+				& a{
+					color: var(--bs-gray-dark);
+					text-decoration: none;
+					font-size: 120%;
+					text-transform: capitalize;
+				}
+			}
+		}
+	}
+
+	& .dataTable-bottom{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		& .dataTable-pagination{
+			
+			& .dataTable-pagination-list {
+				@extend .pagination;
+				margin: 0;
+
+				& li{
+					@extend .page-item;
+
+					& a {
+						@extend .page-link;
+					}
+				}
+			}
+		}
+	}
+}
+
+@import "ckeditor";
+
+.modal.code{
+	& .modal-body{
+		padding: .25rem;
+		background-color: #272822;
+	}
+}
+
+.CodeMirror{
+	min-height: 30vh;
+	transition: top 0.5s;
+}
+.CodeMirror-fullscreen {
+    position: fixed;
+    top: 0;
+    z-index: 219990;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 
 @media (max-width: 62rem) {
 	.main{

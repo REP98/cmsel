@@ -17,6 +17,8 @@ class PagesModel extends Model
 {
     use HasSlug, HasFactory;
 
+    protected $table = 'pages';
+
     protected $fillable = [
         'slug',
         'parent_id',

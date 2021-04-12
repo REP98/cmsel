@@ -1,0 +1,17 @@
+.ck[contenteditable]{
+	background-color: #fff;
+	@extend .shadow-sm;
+}
+.ck-balloon-panel{
+	max-width: 100%;
+}
+.ck-body-wrapper{
+	position: -webkit-sticky;
+	position: sticky;
+	top: 4rem;
+}
+@media (max-width: 991px) {
+	.ck.ck-balloon-panel{
+		let: 0 !important;
+	}
+}

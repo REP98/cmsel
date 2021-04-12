@@ -21,11 +21,9 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 		Route::get('/editor', function(){ return 'PÁGINA DE EDICION'; })->name('editors')->middleware(['permission:ap_config_manage read create']);
 
+		Route::get('/test/{view}', [App\Http\Controllers\DashboardController::class, 'test']);
 		// Pages
-		Route::prefix('page')->middleware(['permission:ap_page read'])->group(function(){
-			Route::get('/', function(){ return 'PÁGINA DE PAGINAS'; })->name('page');
-			Route::get('/new', function(){ return 'CREAR PAGINAS'; })->name('page.new')->middleware(['permission:create']);
-		});
+		Route::resource('page', \App\Http\Controllers\PageController::class)->middleware(['permission:ap_page read']);
 
 		// Post
 		Route::prefix('post')->middleware(['permission:read'])->group(function(){

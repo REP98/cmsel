@@ -32,7 +32,7 @@
 		@yield('style')
 	</style>
 </head>
-<body>
+<body data-bs-no-jquery>
 	<div class="wrapper">
 		<nav class="sidebar open" id="sidebar">
 			<div class="brand">
@@ -50,7 +50,7 @@
 						@if(property_exists($v, 'submenu'))
 						<div class="nav-item dropdown" style="order: {{$v->order}}">
 							<a href="{{$url}}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
-							<span>{{$n}}</span>
+								<span>{{$n}}</span>
 							</a>
 							<ul class="dropdown-menu">
 								@foreach($v->submenu as $sn => $fv)
@@ -96,12 +96,11 @@
 				<ul class="navbar-nav ms-auto">
 					<li class="nav-item dropdown">
 						<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-role="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-							{{-- @if(Gravatar::exists(Auth::user()->email))
+							@if(Gravatar::exists(Auth::user()->email))
 							<img src="{{Gravatar::get(Auth::user()->email, 'small')}}" class="profile-gravatar">
 							@else
 							<img src="{{asset($setting['img']->avatar)}}" class="profile-gravatar">
-							@endif --}}
-							<img src="{{asset($setting['img']->avatar)}}" class="profile-gravatar">
+							@endif
 							<span>{{ $user->name }}</span>
 						</a>
 
@@ -132,7 +131,7 @@
 					<div class="row text-muted">
 						<div class="col-12 text-end">
 							<p class="mb-0">
-								&copy; {{date('Y')}} - <a href="{{url('/')}}" class="text-muted">{{ config('app.name', 'Laravel') }}</a>
+								&copy; {{date('Y')}} - <a href="{{url('/')}}" class="text-muted">{{$setting['config']->title }}</a>
 							</p>
 						</div>
 					</div>

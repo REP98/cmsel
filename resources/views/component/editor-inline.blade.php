@@ -1,0 +1,1 @@
+<div data-role="ckeditor" data-style="inline"></div>

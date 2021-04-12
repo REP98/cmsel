@@ -1,0 +1,9 @@
+/*!
+ * 
+ * 	Fascino fascino (https://fascino.svilupporep.site)
+ * 	@version v0.0.5
+ * 	@copyright 2020-2021 Sviluppo Web (https://svilupporep.site)
+ * 	@author Robert Pérez <delfinmundo@gmail.com>
+ *
+ * 	@license Licensed under MIT
+ */
