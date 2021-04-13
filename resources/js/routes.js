@@ -14,6 +14,12 @@ const routes = {
     "debugbar.assets.js": {
         "uri": "_debugbar\/assets\/javascript"
     },
+    "ckfinder_connector": {
+        "uri": "ckfinder\/connector"
+    },
+    "ckfinder_browser": {
+        "uri": "ckfinder\/browser"
+    },
     "login": {
         "uri": "login"
     },

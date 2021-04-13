@@ -24,9 +24,7 @@ class PagesModel extends Model
         'parent_id',
         'title',
         'description',
-        'content',
-        'style_id',
-        'user_id'
+        'content'
     ];
 
 
@@ -52,7 +50,7 @@ class PagesModel extends Model
 
     public function getSlugOptions(): SlugOptions
     {
-        return SlugOptions::cretate()
+        return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
     }

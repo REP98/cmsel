@@ -43,7 +43,7 @@ class PostCategories extends Model
 
     public function getSlugOptions(): SlugOptions
     {
-        return SlugOptions::cretate()
+        return SlugOptions::create()
             ->generateSlugsFrom('categories')
             ->saveSlugsTo('slug_cat');
     }

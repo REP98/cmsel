@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\PagesModel;
+use App\Models\Style;
 use App\Models\Setting as SettingModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Setting;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class PageController extends Controller
 {
@@ -44,7 +48,8 @@ class PageController extends Controller
 				'content',
 				'email_verified_at',
 				'password',
-				'email'],
+				'email'
+			],
 			'dataTableTransform'=>[
 				'title'=>'Titulo',
 				'name' => 'Autor'
@@ -86,29 +91,46 @@ class PageController extends Controller
 
 		$valid = Validator::make($request->all(), 
 		[
-			'title' => 'require'
+			'title' => ['required']
 		],
 		[
-			'title' => 'Solicitamos un titulo para su página'
+			'title.required' => 'Solicitamos un titulo para su página'
 		]);
 
-		if ($valid->fail()) {
+		if ($valid->fails()) {
 			return redirect('page/create')
 					->withErrors($valid)
 					->withInput();
 		}
-		/*
-		$user = User::find($request->autor);
-		$style = 
+
+		$description = [
+			'title' => $request->title,
+			'description' => Str::limit($request->content, 50, '(...)')
+		];
+		$style = new Style([
+			'name' => 'default',
+			'css' => $request->style
+		]);
 		$pageData = [
 			'title' => $request->title,
-	        'description' => $request->description,
-	        'content' => $request->content,
-	        'style_id' ,
-	        'user_id'
+	        'description' => json_encode($description),
+	        'content' => htmlentities(urldecode($request->content))
 		];
-		*/
-		debug($request->all());
+		if (!empty($request->parent)) {
+			$pageData['parent_id'] = $request->parent;
+		}
+		$page = PagesModel::create($pageData);
+		$page->styles()->sync($style);
+		$page->PostAutor()->sync(auth()->user());
+		$page->save();
+
+		$this->Setting->setConfig('page', [[
+					'id'=>$page->id,
+					'condition'=> $request->condition
+				]]);
+
+		return route('page.update', [$page->id])
+			->with('status', 'Página <a target="_blank" href="/'.$page->slug.'">'.$page->title.'</a> Guardada con éxito');
 	}
 
 	/**
@@ -163,13 +185,13 @@ class PageController extends Controller
 
 		$valid = Validator::make($request->all(), 
 		[
-			'title' => 'require'
+			'title' => ['required']
 		],
 		[
-			'title' => 'Solicitamos un titulo para su página'
+			'title.required' => 'Solicitamos un titulo para su página'
 		]);
 
-		if ($valid->fail()) {
+		if ($valid->fails()) {
 			return redirect()
 					->route('page.edit', $pagesModel->id)
 					->withErrors($valid)

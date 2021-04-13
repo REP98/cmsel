@@ -11386,6 +11386,26 @@ main::after {
   border-top: 0.6875rem solid #201815;
 }
 
+h2.hightitle, .hightitle.h2 {
+  padding-left: var(--padding-left);
+  width: 100%;
+  text-transform: capitalize;
+  font-size: 3.75rem;
+  font-family: var(--font-family-montserrat);
+  font-weight: var(--font-weight-medium);
+  line-height: 4.5rem;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  color: #201815;
+  border: 0;
+  border-top: 0.6875rem solid #201815;
+}
+h2.hightitle::before, .hightitle.h2::before {
+  content: "";
+  border: 0;
+  border-top: 1px solid #201815;
+}
+
 .bordertitle {
   display: flex;
   align-items: center;

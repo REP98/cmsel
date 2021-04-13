@@ -2,12 +2,19 @@ require('./bootstrap');
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector'
 require('./CodeMirror')
 
-console.log(CodeMirror)
-
 window.CKE = window.CKE || {}
 
 function saveData(data) {
 	console.log('simulate, autosave')
+}
+
+window.getDataEditor = (editor) => {
+	let CKE = _$(_$(editor.editor.sourceElement).clone(true)[1])
+	let data = {};
+	data.title = CKE.find('h1').first().text()
+	CKE.find('h1').remove();
+	data.content = CKE.html()
+	return data;
 }
 
 _$().__proto__.editor = function(style = 'classic',options) {
@@ -18,24 +25,65 @@ _$().__proto__.editor = function(style = 'classic',options) {
 	}
 
 	let opt = {
+		removePlugins: ['Markdown'],
 		autosave: {
 			waitingTime: 300000, // 300000ms = 5min
 			save(editor){
 				return saveData(editor.getData())
 			}
 		},
+		codeBlock: {
+			languages: [
+				{language: 'plaintext', label: 'Text'},
+				{language: 'php', label: 'PHP'},
+				{language: 'javacript', label: 'Javascript'},
+				{language: 'json', label: 'JSON'},
+				{language: 'html', label: 'HTML'},
+				{language: 'css', label: 'CSS'}
+			]
+		},
 		fontFamily: {
 			options: [
 				'default',
 				'Alex Brush',
+				'Arial, sans-serif',
 				'Asap',
 				'Asap Condensed',
+				'Courier New, Courier monospace',
+				'Georgia',
+				'Lucida Sans',
 				'Montserrat',
+				'Open Sans',
 				'Open Sans Condensed',
 				'Roboto',
-				'Roboto Slab'
+				'Roboto Slab',
+				'Tahoma',
+				'Times New Roman',
+				'Trebuchet MS',
+				'Ubuntu',
+				'Ubuntu Mono',
+				'Verdana'
 			],
 			supportAllValues: true
+		},
+		fontSize: {
+			options: [
+				'tiny',
+				11,
+				12,
+				'small',
+				'default',
+				18,
+				19,
+				21,
+				22,
+				26,
+				'big',
+				32,
+				36,
+				38,
+				'huge'
+			]
 		},
 		toolbar: {
 			items: [
@@ -75,7 +123,6 @@ _$().__proto__.editor = function(style = 'classic',options) {
 				'|',
 				'undo',
 				'redo',
-				'restrictedEditing',
 				'|',
 				'blockQuote',
 				'insertTable',
@@ -92,10 +139,41 @@ _$().__proto__.editor = function(style = 'classic',options) {
 		},
 		language: 'es',
 		image: {
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight',
+			],
+			resizeOptios: [
+				{
+					name: 'resizeImage:original',
+					label:'Original 100%',
+					value: null
+				},
+				{
+					name: 'resizeImage:75',
+					label:'75%',
+					value: '75'
+				},
+				{
+					name: 'resizeImage:50',
+					label:'50%',
+					value: '50'
+				},
+				{
+					name: 'resizeImage:25',
+					label:'25%',
+					value: '25'
+				}
+			],
 			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
+				'resizeImage',
+				'|',
 				'imageTextAlternative',
-				'imageStyle:full',
-				'imageStyle:side',
 				'linkImage'
 			]
 		},
@@ -109,13 +187,31 @@ _$().__proto__.editor = function(style = 'classic',options) {
 			]
 		},
 		ckfinder: {
+			uploadUrl: _$.Route('ckfinder_connector')+'?command=QuickUpload&type=Files',
 			options: {
-				language: 'es'
+				language: 'es',
+				connectorPath: _$.Route('ckfinder_connector')
+			}
+		},
+		htmlEmbed: {
+			showPreviews: true,
+			sanitizeHtml: (inputHtml) => {
+				_$.script(inputHtml)
+				return {
+					html: inputHtml,
+					hasChanged:true,
+				}
 			}
 		},
 		heading: {
 			options: [
-				{ model: 'paragraph', view:'p', title: 'Parrafos', class: 'ck-heading_paragraph'}
+				{ model: 'paragraph', view:'p', title: 'Parrafos', class: 'ck-heading_paragraph'},
+				{ model: 'pheading', view: {name: 'p', class:'lead'}, 
+					title: 'Parrafo Encabezado', class:'ck-heading_lead'
+				},
+				{ model: 'headingbd', view: {name: 'h2', class:'hightitle'}, 
+					title: 'Encabezado con BorderTOP', class:'ck-heading_htop'
+				}
 			]
 		}			
 	}
@@ -139,7 +235,8 @@ _$().__proto__.editor = function(style = 'classic',options) {
 						.create( element, config )
 						.then( editor => {
 							_$.hooks.run('CKE.create', element, editor, config)
-							_$(element).data('CKE', {editor, config})
+							_$(element).data('cke', {editor, config})
+							_$('.ck-body-wrapper').insertAfter(element)
 							CKEditorInspector.attach(editor)
 							editor.element = element
 							return editor
@@ -148,7 +245,7 @@ _$().__proto__.editor = function(style = 'classic',options) {
 				
 				watchdog.setDestructor( editor => {
 					_$.hooks.run('CKE.create', editor.element, editor)
-					_$(editor.element).removeData('CKE')
+					_$(editor.element).removeData('cke')
 					return editor.destroy();
 				})
 				

@@ -27,8 +27,8 @@ class Setting extends Controller
     		return $this->fild;
     	}
 
-    	$valore = $this->fild[$type];
-
+    	$valore = (array) $this->fild[$type];
+       
     	if (empty($key)) {
     		return $valore;
     	}
@@ -36,7 +36,7 @@ class Setting extends Controller
     	if (array_key_exists($key, $valore)) {
     		return $valore[$key];
     	}
-
+        
     	if (stripos( $key, '.' ) !== false) {
     		list($key1, $key2) = explode($key);
 
@@ -49,7 +49,7 @@ class Setting extends Controller
     		}
     	}
 
-    	return $valore;
+    	return (object) $valore;
     }
 
     public function set($type, $key, $value)

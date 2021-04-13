@@ -29,7 +29,7 @@ class PostTags extends Model
 
     public function getSlugOptions(): SlugOptions
     {
-        return SlugOptions::cretate()
+        return SlugOptions::create()
             ->generateSlugsFrom('tag')
             ->saveSlugsTo('slug_tag');
     }

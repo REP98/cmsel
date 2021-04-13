@@ -60,7 +60,7 @@ class PostModel extends Model
 
 	public function getSlugOptions(): SlugOptions
 	{
-		return SlugOptions::cretate()
+		return SlugOptions::create()
 			->generateSlugsFrom('post_title')
             ->saveSlugsTo('post_slug');
 	}

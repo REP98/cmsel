@@ -38,7 +38,7 @@ class Template extends Model
 
     public function getSlugOptions(): SlugOptions
 	{
-		return SlugOptions::cretate()
+		return SlugOptions::create()
 			->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
 	}

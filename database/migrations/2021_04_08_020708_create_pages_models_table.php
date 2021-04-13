@@ -20,13 +20,7 @@ class CreatePagesModelsTable extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->text('content');
-            $table->foreignId('style_id');
             $table->index('slug');
-            $table->foreignId('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('no action')
-                ->onDelete('no action');
             $table->timestamps();
         });
     }
