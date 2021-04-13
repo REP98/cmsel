@@ -47,4 +47,8 @@ el siguinete comando para removerlo si lo tiene instalado dentro de su carpeta v
 * Xubunu 20.04
 
 ### Especificaciones de Desarrollo ###
-Sistema desarrollado en laravel 8, con Larave UI y bootstrap 5.0
+Sistema desarrollado en laravel 8, con Larave UI y Bootstrap 5.0
+
+
+
+
