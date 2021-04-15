@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\PagesModel;
+use App\Models\Page;
 use App\Models\Style;
 use App\Models\Setting as SettingModel;
 use Illuminate\Http\Request;
@@ -16,6 +16,7 @@ class PageController extends Controller
 {
 
 	public $Setting;
+	private $typeCondition  = [ 'index', 'category', 'archive', 'post', 'custom_post'];
 
 	public function __construct()
 	{
@@ -31,6 +32,7 @@ class PageController extends Controller
 	public function index()
 	{
 		$this->middleware(['auth:sanctum', 'permission:ap_page read']);
+
 		return view('dashboard.Page.page', [
 			'widgetbar' => [
 				[
@@ -38,7 +40,7 @@ class PageController extends Controller
 					'name' => 'Añadir Página'
 				]
 			],
-			'dataTable' => PagesModel::with('PostAutor')->get(),
+			'dataTable' => Page::with('users')->get(),
 			'dataTableExclude' => [
 				"created_at", 
 				"user_id", 
@@ -53,8 +55,7 @@ class PageController extends Controller
 			'dataTableTransform'=>[
 				'title'=>'Titulo',
 				'name' => 'Autor'
-			],
-			'setting' => $this->Setting->get()
+			]
 		]);
 	}
 
@@ -68,14 +69,13 @@ class PageController extends Controller
 		$this->middleware(['auth:sanctum', 'permission:ap_page read']);
 		return view('dashboard.Page.new', [
 			'edit' => false,
-			'page' => [],
+			'pages' => [],
 			'widgetbar' => [
 				[
 					'url' => route('page.index'),
 					'name' => 'Página'
 				]
-			],
-			'setting' => $this->Setting->get()
+			]
 		]);
 	}
 
@@ -103,31 +103,31 @@ class PageController extends Controller
 					->withInput();
 		}
 
-		$description = [
-			'title' => $request->title,
-			'description' => Str::limit($request->content, 50, '(...)')
-		];
+		$user = User::find(auth()->user()->id);
+
+
 		$style = new Style([
 			'name' => 'default',
-			'css' => $request->style
+			'css' => $request->style,
+			'js' => '',
+		    'show' => array_search($request->condition['type'], $this->typeCondition),
+		    'level' => '-1',
+		    'user' => '-1'
 		]);
-		$pageData = [
-			'title' => $request->title,
-	        'description' => json_encode($description),
-	        'content' => htmlentities(urldecode($request->content))
-		];
-		if (!empty($request->parent)) {
-			$pageData['parent_id'] = $request->parent;
-		}
-		$page = PagesModel::create($pageData);
-		$page->styles()->sync($style);
-		$page->PostAutor()->sync(auth()->user());
-		$page->save();
-
-		$this->Setting->setConfig('page', [[
-					'id'=>$page->id,
-					'condition'=> $request->condition
-				]]);
+		$user->styles()->save($s);
+		$page = new Page([
+		    'title' => $request->title,
+		    'description' => [
+		        'title'=> $request->title,
+		        'description' => Str::limit($request->content, 50, '(...)')
+		    ],
+		    'content' => htmlentities(urldecode($request->content)),
+		    'parent_id' => empty($request->parent) ? 0 : $request->parent
+		]);
+		$user->pages()->save($page);
+		$style->pages()->attach($page->id)
+		
+		$this->Setting->pages($page->id, $request->condition);
 
 		return route('page.update', [$page->id])
 			->with('status', 'Página <a target="_blank" href="/'.$page->slug.'">'.$page->title.'</a> Guardada con éxito');
@@ -136,28 +136,29 @@ class PageController extends Controller
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param  \App\Models\PagesModel  $pagesModel
+	 * @param  \App\Models\Page  $Page
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show(PagesModel $pagesModel)
+	public function show(Page $Page)
 	{
 		// Aqui debemos redireccionar al pagina en el Front-END del Site
-		debug($pagesModel);
+		debug($Page);
 	}
 
 	/**
 	 * Show the form for editing the specified resource.
 	 *
-	 * @param  \App\Models\PagesModel  $pagesModel
+	 * @param  \App\Models\Page  $Page
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit(PagesModel $pagesModel)
+	public function edit(Page $Page)
 	{
 		$this->middleware(['auth:sanctum', 'permission:ap_page update']);
-		
-		return view('dashboard.Page.new', [
+		debug($Page->all()->id);
+		return '<h1></h1>';
+		/*return view('dashboard.Page.new', [
 			'edit' => true,
-			'page' => $pagesModel,
+			'page' => $Page,
 			'widgetbar' => [
 				[
 					'url' => route('page.index'),
@@ -169,17 +170,17 @@ class PageController extends Controller
 				]
 			],
 			'setting' => $this->Setting->get()
-		]);
+		]); */
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \App\Models\PagesModel  $pagesModel
+	 * @param  \App\Models\Page  $Page
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, PagesModel $pagesModel)
+	public function update(Request $request, Page $Page)
 	{
 		$this->middleware(['auth:sanctum', 'permission:ap_page update']);
 
@@ -193,21 +194,21 @@ class PageController extends Controller
 
 		if ($valid->fails()) {
 			return redirect()
-					->route('page.edit', $pagesModel->id)
+					->route('page.edit', $Page->id)
 					->withErrors($valid)
 					->withInput();
 		}
-		debug($request->all(), $pagesModel);
+		debug($request->all(), $Page);
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  \App\Models\PagesModel  $pagesModel
+	 * @param  \App\Models\Page  $Page
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy(PagesModel $pagesModel)
+	public function destroy(Page $Page)
 	{
-		debug($pagesModel);
+		debug($Page);
 	}
 }

@@ -29,11 +29,12 @@
 		<div class="wrapper">
 			<nav class="sidebar open" id="sidebar">
 				<div class="brand">
-					<img src="{{asset($setting['img']->logo)}}" class="logo" alt="{{$setting['config']->title}}">
+					<img src="@if(empty(settings('image', 'logo'))) {{asset('storage/default/logo.png')}} @else {{asset(settings('image', 'logo'))}} @endif" class="logo" alt="{{settings('general', 'site_title')}}">
 				</div>
 				<nav class="nav flex-column">
-					@foreach($setting['config']->menu as $n => $v)
+					@foreach(settings('menu', 'dashboard') as $n => $v)
 						@php
+							if (is_array($v)) { $v = (object) $v; }
 							$url = $v->url;
 							if (is_array($v->url) || is_object($v->url)) {
 								$url = route($v->url[0], (array) $user[$v->url[1]]);
@@ -41,13 +42,14 @@
 						@endphp
 						@can($v->level)
 							@if(property_exists($v, 'submenu'))
-							<div class="nav-item dropdown" style="order: {{$v->order}}">
+							<div class="nav-item dropdown" style="order: {{$v->order}} !important; ">
 								<a href="{{$url}}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
 									<span>{{$n}}</span>
 								</a>
 								<ul class="dropdown-menu">
 									@foreach($v->submenu as $sn => $fv)
 									@php
+										if (is_array($fv)) { $fv = (object) $fv; }
 										$surl = $fv->url;
 										if (is_array($fv->url) || is_object($fv->url)) {
 											$surl = route($fv->url[0], (array) $user[$fv->url[1]]);
@@ -60,7 +62,7 @@
 								</ul>
 							</div>
 							@else
-							<div class="nav-item">
+							<div class="nav-item" style="order: {{$v->order}} !important; ">
 								<a href="{{$v->url}}" class="nav-link" role="button" aria-expanded="false">
 								{{$n}}
 								</a>
@@ -92,7 +94,7 @@
 								@if(Gravatar::exists(Auth::user()->email))
 								<img src="{{Gravatar::get(Auth::user()->email, 'small')}}" class="profile-gravatar">
 								@else
-								<img src="{{asset($setting['img']->avatar)}}" class="profile-gravatar">
+								<img src="{{asset(settings('image', 'avatar'))}}" class="profile-gravatar">
 								@endif
 								<span>{{ $user->name }}</span>
 							</a>
@@ -124,7 +126,7 @@
 						<div class="row text-muted">
 							<div class="col-12 text-end">
 								<p class="mb-0">
-									&copy; {{date('Y')}} - <a href="{{url('/')}}" class="text-muted">{{$setting['config']->title }}</a>
+									&copy; {{date('Y')}} - <a href="{{url('/')}}" class="text-muted">{{settings('general', 'site_title')}}</a>
 								</p>
 							</div>
 						</div>
@@ -137,11 +139,14 @@
 			window.uri = `{{url('/')}}`
 			window.user = @json($user)
 		</script>
+		@FilemanagerScript
+
+		<script src="{{ asset('filemanager/bundle/filemanager.min.js') }}" defer></script>
 		<script src="{{ asset('js/dash.js') }}" defer></script>
-		<script src="{{ asset('js/ckfinder/ckfinder.js') }}" defer></script>
+		{{-- <script src="{{ asset('js/ckfinder/ckfinder.js') }}" defer></script> --}}
 		<script defer>
 			window.addEventListener('load', function(){
-				CKFinder.config( { connectorPath: @json(route('ckfinder_connector')) } );
+				filemanager.baseUrl = location.origin+'/admin/filemanager';
 				@yield('script')
 			})
 		</script>

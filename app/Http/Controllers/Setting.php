@@ -9,127 +9,117 @@ class Setting extends Controller
 {
 
 	protected $sm;
-	protected $fild;
+	protected $column = [
+		'image',
+		'general',
+		'config',
+		'pages',
+		'menu',
+		'mail',
+	];
 
 	public function __construct()
 	{
-		$this->sm = SettinsModel::First();
-		$this->parseJson();
+		$this->sm = SettinsModel::First(); // Cambiar para multisite
+		if (!is_array($this->sm->general)) {
+			throw new Exception("This site has no settings", 1);
+		}
+
+		if (!array_key_exists('site_url', $this->sm->general)) {
+			throw new Exception("This site has no settings\n Verify URL", 1);
+		}
+
+		if (strcmp($this->sm->general['site_url'], url('/')) !== 0) {
+			throw new Exception("This site has no settings\n Verify URL", 1);
+		}
 	}
 
-    public function get( $type = null, $key = null)
-    {
-    	if (empty($type)) {
-    		return $this->fild;
-    	}
+	public function index(){
 
-    	if (!array_key_exists($type, $this->fild)) {
-    		return $this->fild;
-    	}
+		return view('dashboard.settings.index');
+	}
 
-    	$valore = (array) $this->fild[$type];
-       
-    	if (empty($key)) {
-    		return $valore;
-    	}
+	public function get( $type = null, $key = null)
+	{
+		if (empty($type)) {
+			return $this->sm;
+		}
+		if (array_search($type, $this->column) === false) {
+			return "";
+		}
 
-    	if (array_key_exists($key, $valore)) {
-    		return $valore[$key];
-    	}
-        
-    	if (stripos( $key, '.' ) !== false) {
-    		list($key1, $key2) = explode($key);
+		$valore = $this->sm[$type];
 
-    		if (array_key_exists($key1, $valore)) {
-    			if (array_key_exists($key2, $valore[$key1])) {
-    				return $valore[$key1][$key2];
-    			} else {
-    				return $valore[$key1];
-    			}
-    		}
-    	}
+		if (empty($key)) {
+			return (object) $valore;
+		}
 
-    	return (object) $valore;
-    }
+		if (array_key_exists($key, $valore)) {
+			return $valore[$key];
+		} else if(!array_key_exists($key, $valore)){
+			return null;
+		}
+		
+		if (stripos( $key, '.' ) !== false) {
+			list($key1, $key2) = explode($key);
 
-    public function set($type, $key, $value)
-    {
-    	if (empty($type)) {
-    		return false;
-    	}
+			if (array_key_exists($key1, $valore)) {
+				if (array_key_exists($key2, $valore[$key1])) {
+					return $valore[$key1][$key2];
+				} else {
+					return $valore[$key1];
+				}
+			}
+		}
 
-    	$data = (array) $this->get($type);
-    	
-    	if (array_key_exists($key, $data)) {
-    		if (is_array($data[$key])) {
-    			$data[$key] = array_merge_recursive($data[$key], $value);
-    		} else {
-    			$data[$key] = $value;
-    		}    		
-    	} else {
-    		$data[$key] = $value;
-    	}
+		return (object) $valore;
+	}
 
-    	$this->fild[$type] = (object) $data;
+	private function __setModel($data) {
+		$sm = SettinsModel::First();
+		foreach ($data as $key => $value) {
+			$sm[$key] = $value;
+		}
+		$sm->save();
+		$this->sm = $sm;
+	}
 
-    	foreach ($this->fild as $key => $value) {
-    		if (array_search($key, ['created_at', 'updated_at', 'id']) === false) {
-    			$this->sm[$key] = json_encode($value);
-    		}
-    	}
-    	$this->sm->save();
-    	$this->parseJson();
-    	return $this->fild;
+	public function set($type, $key, $value)
+	{
+		if (empty($type)) {
+			return false;
+		}
 
-    }
+		$data = (array) $this->get($type);
+		
+		if (array_key_exists($key, $data)) {
+			if (is_array($data[$key])) {
+				$data[$key] = array_merge_recursive($data[$key], $value);
+			} else {
+				$data[$key] = $value;
+			}    		
+		} else {
+			$data[$key] = $value;
+		}
 
-    public function getImgs($key = null)
-    {
-    	return $this->get('img', $key);
-    }
+		$this->__setModel([$type => $data]);
 
-    public function getConfig($key = null)
-    {
-    	return $this->get('config', $key);
-    }
+		return $this->sm[$type];
+	}
 
-    public function getMail($key = null)
-    {
-    	return $this->get('mail', $key);
-    }
-
-    public function getStyle($key = null)
-    {
-    	return $this->get('style', $key);
-    }
-
-    public function setImg($type, $url)
-    {
-    	return $this->set('img', $type, $url);
-    }
-
-    public function setConfig($type, $obj)
-    {
-    	return $this->set('config', $type, $obj);
-    }
-
-    public function setMail($type, $obj)
-    {
-    	return $this->set('mail', $type, $obj);
-    }
-
-    public function setStyle($type, $obj)
-    {
-    	return $this->set('style', $type, $obj);
-    }
-
-    protected function parseJson()
-    {
-    	$sm = $this->sm;
-    	foreach ($sm->toArray() as $key => $value) {
-    		$this->fild[$key] = array_search($key, ['created_at', 'updated_at', 'id']) === false ? 
-    				json_decode( $value, false ) : 
-    				$value;
-    	}
-    }
+	public function __call($name, $arguments = [])
+	{
+		if (!empty($name) && array_search($name, $this->column)){
+			$method = 'get';
+			if (count($arguments) == 2) {
+				$method = 'set';
+			}
+			$arg = [$name]; 
+			if (is_array($arguments) && count($arguments) >= 1){
+				$arg = array_merge($arg,  $arguments);
+			}
+			
+			return call_user_func_array([__CLASS__, $method], $arg);
+		}
+	}
 }

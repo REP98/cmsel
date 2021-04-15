@@ -25,9 +25,7 @@ Ejecute lo siguiente dentro de la carpeta del proyecto
 
 ## NOTAS ##
 
-Por poblemas de incompativilidades con laravel se removio el paquete <u>cviebrock/eloquent-sluggable</u> Ejecute
-el siguinete comando para removerlo si lo tiene instalado dentro de su carpeta vendor.
-- `composer remove cviebrock/eloquent-sluggable`
+Revisar el archivo relationshit
 
 ## Entorno ##
 

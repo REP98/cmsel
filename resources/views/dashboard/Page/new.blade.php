@@ -14,7 +14,8 @@
 	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	</div>
 @endif
-<form class="form" id="page" method="post" action="@if(!empty($edit)) {{route('page.update', $page->id)}} @else {{route('page.store')}} @endif">
+
+<form class="form" id="page" method="post" action="@if(!empty($edit)) {{route('page.update', [$page->id])}} @else {{route('page.store')}} @endif">
 	@csrf
 	<div class="row mb-2">
 		<div class="col-12 d-flex justify-content-around">
@@ -22,16 +23,26 @@
 				<span class="input-group-text" id="text">Página Padre</span>
 				<select class="form-select" name="parent">
 					<option value="">Ningúna</option>
+					@foreach($pages as $p)
+					<option value="{{$p->id}}" @if(!empty($edit) && $page->parent_id === $p->id) selected @endif>{{$p->title}}</option>
+					@endforeach
 				</select>
 			</div>
 			<div class="inpt-group w-50 d-inline-flex me-2" aria-label="Condiciones">
 				<span class="input-group-text" id="text">Mostrar en</span>
 				<select class="form-select" name="condition[type]">
-					<option value="index">Principal</option>
-					<option value="category">Categoría</option>
-					<option value="archive">Archivo</option>
-					<option value="post">Entradas</option>
-					<option value="custom_post">Entradas Personalizadas</option>
+					@php
+						$condition_type = [
+								'index' => 'Principal',
+								'category' => 'Categoría',
+								'archive' => 'Archivo',
+								'post' => 'Entradas',
+								'custom_post' => 'Entradas Personalizadas'
+						];
+					@endphp
+					@foreach($condition_type as $name => $value)
+					<option value="{{$name}}">{{$value}}</option>
+					@endforeach
 				</select>
 				<span class="input-group-text" id="text">si</span>
 				<select class="form-select" disabled id="loadajax" name="condition[ifset]">

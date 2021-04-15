@@ -2,44 +2,42 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use App\Models\Style;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Template extends Model
 {
     use HasSlug, HasFactory;
 
     protected $fillable = [
-		'name',
-		'shotcode',
-		'position',
-		'content',
-		'ids',
-		'type_id',
-		'config',
-		'slug',
-		'style_id',
-		'user_id'
-	];
+    	'slug',
+    	'name',
+    	'shotcode',
+    	'content',
+    	'type'
+    ];
 
-    public function styles(): BelongsToMany
-	{
-		return $this->belongsToMany(Style::class);
-	}
-
-	public function Autor(): BelongsTo
+    // Dependecy
+    public function users() : BelongsTo
     {
-        return $this->belongsTo(User::class);
+    	return $this->belongsTo(User::class);
+    }
+
+    // Require
+    public function styles(): BelongsToMany
+    {
+    	return $this->belongsToMany(Setting::class)->withTimestamps();
     }
 
     public function getSlugOptions(): SlugOptions
 	{
 		return SlugOptions::create()
-			->generateSlugsFrom('name')
+			->generateSlugsFrom(['type', 'name'])
             ->saveSlugsTo('slug');
 	}
 
@@ -47,4 +45,8 @@ class Template extends Model
 	{
 		return 'slug';
 	}
+
+    protected function serializeDate(DateTimeInterface $date) {
+        return $date->format('Y-m-d H:i:s');
+    }
 }

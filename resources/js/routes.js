@@ -14,11 +14,11 @@ const routes = {
     "debugbar.assets.js": {
         "uri": "_debugbar\/assets\/javascript"
     },
-    "ckfinder_connector": {
-        "uri": "ckfinder\/connector"
+    "filemanager.base_route": {
+        "uri": "admin\/filemanager"
     },
-    "ckfinder_browser": {
-        "uri": "ckfinder\/browser"
+    "filemanager.action_route": {
+        "uri": "admin\/filemanager"
     },
     "login": {
         "uri": "login"
@@ -64,6 +64,9 @@ const routes = {
     },
     "page.edit": {
         "uri": "dashboard\/page\/{page}\/edit"
+    },
+    "medios": {
+        "uri": "dashboard\/medios"
     },
     "post": {
         "uri": "dashboard\/post"

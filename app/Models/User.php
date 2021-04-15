@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use DateTimeInterface;
-use App\Models\PostModel;
-use App\Models\PagesModel;
-use App\Models\Template;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -48,19 +45,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function Posts(): HasMany
+    public function posts(): HasMany
     {
-       return $this->hasMany(PostModel::class);
+       return $this->hasMany(Post::class);
     }
 
-    public function Pages(): HasMany
+    public function pages(): HasMany
     {
-       return $this->hasMany(PagesModel::class);
+       return $this->hasMany(Page::class);
     }
 
-    public function Template(): HasMany
+    public function templates(): HasMany
     {
        return $this->hasMany(Template::class);
+    }
+
+    public function styles(): HasMany
+    {
+        return $this->hasMany(Style::class);
     }
 
     protected function serializeDate(DateTimeInterface $date) {

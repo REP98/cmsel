@@ -12442,9 +12442,9 @@ footer.footer {
 }
 .sidebar .brand img {
   min-height: 3rem;
-  min-width: 100%;
+  max-height: 3rem;
   max-width: 100%;
-  width: 100%;
+  width: auto;
 }
 .sidebar .nav {
   max-height: 84vh;

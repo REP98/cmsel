@@ -25,6 +25,9 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		// Pages
 		Route::resource('page', \App\Http\Controllers\PageController::class)->middleware(['permission:ap_page read']);
 
+		Route::get('/medios', function(){
+			return view('dashboard.medios.full');
+		})->name('medios');
 		// Post
 		Route::prefix('post')->middleware(['permission:read'])->group(function(){
 			Route::get('/', function(){ return 'PÁGINA DE POST'; })->name('post')->middleware(['permission:ap_post read']);
@@ -52,7 +55,7 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 
 		// Ajustes
 		Route::prefix('setting')->middleware(['permission:ap_user_manager read'])->group(function(){
-			Route::get('/', function(){	return 'MI PERFIL';	})->name('setting')->middleware(['permission:ap_config_manage create read', 'role:SuperAdmin|Administrador']);
+			Route::get('/', [\App\Http\Controllers\Setting::class, 'index'])->name('setting')->middleware(['permission:ap_config_manage create read', 'role:SuperAdmin|Administrador']);
 		});
 	});
 });

@@ -187,10 +187,11 @@ _$().__proto__.editor = function(style = 'classic',options) {
 			]
 		},
 		ckfinder: {
-			uploadUrl: _$.Route('ckfinder_connector')+'?command=QuickUpload&type=Files',
+			// uploadUrl: _$.Route('ckfinder_connector')+'?command=QuickUpload&type=Files',
+			uploadUrl: location.origin+"/admin/filemanager?editor=ckEditor",
 			options: {
 				language: 'es',
-				connectorPath: _$.Route('ckfinder_connector')
+				//connectorPath: _$.Route('ckfinder_connector')
 			}
 		},
 		htmlEmbed: {
