@@ -57,19 +57,17 @@ class Setting extends Controller
 		if (array_key_exists($key, $valore)) {
 			return $valore[$key];
 		} else if(!array_key_exists($key, $valore)){
-			return null;
-		}
-		
-		if (stripos( $key, '.' ) !== false) {
-			list($key1, $key2) = explode($key);
-
-			if (array_key_exists($key1, $valore)) {
-				if (array_key_exists($key2, $valore[$key1])) {
-					return $valore[$key1][$key2];
-				} else {
-					return $valore[$key1];
+			if (stripos( $key, '.' ) !== false) {
+				list($key1, $key2) = explode('.', $key);
+				if (array_key_exists($key1, $valore)) {
+					if (array_key_exists($key2, $valore[$key1])) {
+						return $valore[$key1][$key2];
+					} else {
+						return $valore[$key1];
+					}
 				}
 			}
+			return null;
 		}
 
 		return (object) $valore;
@@ -97,11 +95,14 @@ class Setting extends Controller
 				$data[$key] = array_merge_recursive($data[$key], $value);
 			} else {
 				$data[$key] = $value;
-			}    		
+			}  
+		} else if(stripos( $key, '.' ) !== false) {
+			list($key1, $key2) = explode('.', $key);
+			$data[$key1][$key2] = $value;
 		} else {
 			$data[$key] = $value;
 		}
-
+		
 		$this->__setModel([$type => $data]);
 
 		return $this->sm[$type];

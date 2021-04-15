@@ -9,7 +9,7 @@
 		<meta name="robots" content="noindex, nofollow">
 		<!-- CSRF Token -->
 		<meta name="csrf-token" content="{{ csrf_token() }}">
-
+		@yield('metadata')
 		<title>Dashboard {{ config('app.name', 'Laravel') }}</title>
 
 		<!-- Fonts -->
@@ -17,7 +17,6 @@
 		<link rel="dns-prefetch" href="//use.fontawesome.com">
 		<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Asap+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Asap:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans+Condensed:ital,wght@0,300;0,700;1,300&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-			
 		<!-- Styles -->
 		<link href="{{ asset('css/dash.css') }}" rel="stylesheet">
 		@yield('link_style')
@@ -119,6 +118,14 @@
 				<main class="content">
 					<div class="container-fluid p-0">
 						@yield('content')
+						@include('component.editor', ['attr'=>[
+							'data' => [
+								'toolbar' => json_encode([
+									'styleselect | bold italic underline strikethrough | inserttable | image media link openlink unlink | alignleft aligncenter alignright alignjustify | numlist bullist | hr code restoredraft'
+								]),
+								'menubar'=> 'false'
+							]
+							]])
 					</div>
 				</main>
 				<footer class="footer">
@@ -139,14 +146,11 @@
 			window.uri = `{{url('/')}}`
 			window.user = @json($user)
 		</script>
-		@FilemanagerScript
-
-		<script src="{{ asset('filemanager/bundle/filemanager.min.js') }}" defer></script>
 		<script src="{{ asset('js/dash.js') }}" defer></script>
-		{{-- <script src="{{ asset('js/ckfinder/ckfinder.js') }}" defer></script> --}}
+		@yield('link-script')
 		<script defer>
 			window.addEventListener('load', function(){
-				filemanager.baseUrl = location.origin+'/admin/filemanager';
+				
 				@yield('script')
 			})
 		</script>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome');
 
 Auth::routes();
+
 Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])->group(function(){
 	Route::prefix('dashboard')->group(function(){
 
@@ -25,9 +27,11 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		// Pages
 		Route::resource('page', \App\Http\Controllers\PageController::class)->middleware(['permission:ap_page read']);
 
-		Route::get('/medios', function(){
-			return view('dashboard.medios.full');
-		})->name('medios');
+		// Medios
+		Route::group(['prefix' => 'filemanager', 'middleware' => ['auth:sanctum', 'permission:ap_sessions_admin']], function () {
+			\UniSharp\LaravelFilemanager\Lfm::routes();
+        });
+		
 		// Post
 		Route::prefix('post')->middleware(['permission:read'])->group(function(){
 			Route::get('/', function(){ return 'PÁGINA DE POST'; })->name('post')->middleware(['permission:ap_post read']);
@@ -56,6 +60,14 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		// Ajustes
 		Route::prefix('setting')->middleware(['permission:ap_user_manager read'])->group(function(){
 			Route::get('/', [\App\Http\Controllers\Setting::class, 'index'])->name('setting')->middleware(['permission:ap_config_manage create read', 'role:SuperAdmin|Administrador']);
+		});
+		Route::any('/test', function(){
+			$v = settings('menu', 'dashboard.Archivos',[
+	                        'url' => route('unisharp.lfm.show'),
+	                        'order' => 3,
+	                        'level' => 'read create'
+	                    ]);
+			dd($v);
 		});
 	});
 });

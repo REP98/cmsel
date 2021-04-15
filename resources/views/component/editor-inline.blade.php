@@ -1,7 +1,4 @@
-<div data-role="ckeditor" data-style="inline">
-	@if(!empty($title))
-	<h1>{{$title}}</h1>
-	@endif
+<div data-role="editor" data-style="inline">
 	@if(!empty($content))
 	{!!$content!!}
 	@endif

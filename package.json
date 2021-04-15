@@ -10,7 +10,6 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "@ckeditor/ckeditor5-inspector": "^2.2.2",
         "@popperjs/core": "^2.9.2",
         "axios": "^0.21",
         "bootstrap": "^5.0.0-beta3",
@@ -26,6 +25,7 @@
     "dependencies": {
         "codemirror": "^5.60.0",
         "plyr": "^3.6.4",
-        "simple-datatables": "^3.0.2"
+        "simple-datatables": "^3.0.2",
+        "tinymce": "^5.7.1"
     }
 }

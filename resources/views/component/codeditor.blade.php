@@ -6,6 +6,8 @@
 			</button>
 		</div>
 	</div> -->
-	<textarea data-role="codeditor" name="code" 
-			placeholder="Ingrese su código aqui como si fuera en una hoja HTML" data-lang="text/html"></textarea>
+	<textarea data-role="codeditor"
+			@if(!empty($attr)) {{$attr}} @endif
+			data-lang="@if(!empty($langCode)) {{$langCode}} @else text/html @endif"
+			placeholder="Ingrese su código aquí"></textarea>
 </form>

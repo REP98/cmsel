@@ -14,12 +14,6 @@ const routes = {
     "debugbar.assets.js": {
         "uri": "_debugbar\/assets\/javascript"
     },
-    "filemanager.base_route": {
-        "uri": "admin\/filemanager"
-    },
-    "filemanager.action_route": {
-        "uri": "admin\/filemanager"
-    },
     "login": {
         "uri": "login"
     },
@@ -65,8 +59,56 @@ const routes = {
     "page.edit": {
         "uri": "dashboard\/page\/{page}\/edit"
     },
-    "medios": {
-        "uri": "dashboard\/medios"
+    "unisharp.lfm.show": {
+        "uri": "dashboard\/filemanager"
+    },
+    "unisharp.lfm.getErrors": {
+        "uri": "dashboard\/filemanager\/errors"
+    },
+    "unisharp.lfm.upload": {
+        "uri": "dashboard\/filemanager\/upload"
+    },
+    "unisharp.lfm.getItems": {
+        "uri": "dashboard\/filemanager\/jsonitems"
+    },
+    "unisharp.lfm.move": {
+        "uri": "dashboard\/filemanager\/move"
+    },
+    "unisharp.lfm.domove": {
+        "uri": "dashboard\/filemanager\/domove"
+    },
+    "unisharp.lfm.getAddfolder": {
+        "uri": "dashboard\/filemanager\/newfolder"
+    },
+    "unisharp.lfm.getFolders": {
+        "uri": "dashboard\/filemanager\/folders"
+    },
+    "unisharp.lfm.getCrop": {
+        "uri": "dashboard\/filemanager\/crop"
+    },
+    "unisharp.lfm.getCropimage": {
+        "uri": "dashboard\/filemanager\/cropimage"
+    },
+    "unisharp.lfm.getCropnewimage": {
+        "uri": "dashboard\/filemanager\/cropnewimage"
+    },
+    "unisharp.lfm.getRename": {
+        "uri": "dashboard\/filemanager\/rename"
+    },
+    "unisharp.lfm.getResize": {
+        "uri": "dashboard\/filemanager\/resize"
+    },
+    "unisharp.lfm.performResize": {
+        "uri": "dashboard\/filemanager\/doresize"
+    },
+    "unisharp.lfm.getDownload": {
+        "uri": "dashboard\/filemanager\/download"
+    },
+    "unisharp.lfm.getDelete": {
+        "uri": "dashboard\/filemanager\/delete"
+    },
+    "unisharp.lfm.": {
+        "uri": "dashboard\/filemanager\/demo"
     },
     "post": {
         "uri": "dashboard\/post"

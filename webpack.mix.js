@@ -20,7 +20,12 @@ mix.webpackConfig({
     },
 })
 
-mix.js('resources/js/app.js', 'public/js')
+mix.copyDirectory('node_modules/tinymce/icons', 'public/js/tinymce/icons')
+	.copyDirectory('node_modules/tinymce/plugins', 'public/js/tinymce/plugins')
+	.copyDirectory('node_modules/tinymce/skins', 'public/js/tinymce/skins')
+	.copyDirectory('node_modules/tinymce/themes', 'public/js/tinymce/themes')
+	.copy('node_modules/tinymce/tinymce.min.js', 'public/js/tinymce/tinymce.min.js')
+	.js('resources/js/app.js', 'public/js')
 	.js('resources/js/dash.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/dash.scss', 'public/css')

@@ -1,23 +1,28 @@
 require('./bootstrap');
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector'
 require('./CodeMirror')
+const tinymCe = require('tinymce');
 
-window.CKE = window.CKE || {}
+tinyMCE.baseURL = location.origin+'/public/js/tinymce'
 
+_$.getValueActiveEditor = function(offHtml = true){
+	return _$.getValueEditor(tinyMCE.activeEditor, offHtml);
+}
+
+_$.getValueEditor = function(e, offHtml = true){
+	var editor = e.getContent();
+	if(offHtml){
+		var start = editor.indexOf('<body>') + 6;
+		var end = editor.indexOf('</body>') - start - 1;
+		return editor.substr(start, end);
+	}
+	return editor;
+}
 function saveData(data) {
 	console.log('simulate, autosave')
 }
 
-window.getDataEditor = (editor) => {
-	let CKE = _$(_$(editor.editor.sourceElement).clone(true)[1])
-	let data = {};
-	data.title = CKE.find('h1').first().text()
-	CKE.find('h1').remove();
-	data.content = CKE.html()
-	return data;
-}
-
 _$().__proto__.editor = function(style = 'classic',options) {
+
 	if (_$.isObject('style') && _$.isString(options)) {
 		let clon = style
 			style = options
@@ -25,47 +30,113 @@ _$().__proto__.editor = function(style = 'classic',options) {
 	}
 
 	let opt = {
-		removePlugins: ['Markdown'],
-		autosave: {
-			waitingTime: 300000, // 300000ms = 5min
-			save(editor){
-				return saveData(editor.getData())
+		path_absolute: '/',
+		relative_urls: false,
+		themes: 'sviler',
+		language: 'es_ES',
+		plugins: [
+			'advlist',
+			'anchor',
+			'autolink',
+			'autoresize',
+			'autosave',
+			'charmap',
+			'code',
+			'emoticons',
+			'fullpage',
+			'fullscreen',
+			'hr',
+			'image',
+			'importcss',
+			'imagetools',
+			'insertdatetime',
+			'link',
+			'lists',
+			'media',
+			'pagebreak',
+			'paste',
+			'preview',
+			'searchreplace',
+			'table',
+			//'toc',
+			'visualblocks',
+			'visualchars',
+			'wordcount',
+		],
+		toolbar: [
+			'styleselect | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough subscript superscript | hr code',
+			'image link openlink unlink anchor | alignleft aligncenter alignright alignjustify |  numlist bullist indent outdent | blockquote removeformat | restoredraft',
+		],
+		//OPCIONES EXTRAS
+		fullpage_default_encoding: 'UTF-8',
+		fullpage_default_font_size: '1rem',
+		fullpage_default_font_family: _$('body').style('fontFamily'),
+		file_picker_callback : function(callback, value, meta) {
+			let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth,
+				y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight,
+				cmsURL = opt.path_absolute + 'dashboard/filemanager?editor=' + meta.fieldname
+
+			if (meta.filetype == 'image') {
+				cmsURL += "&type=Images"
+			} else {
+				cmsURL += "&type=Files"
 			}
+
+			cmsURL += '&lang=es&modal=true'
+
+			tinyMCE.activeEditor.windowManager.openUrl({
+				url : cmsURL,
+				title : 'Filemanager',
+				width : x * 0.8,
+				height : y * 0.8,
+				resizable : "yes",
+				close_previous : "no",
+				onMessage: (api, message) => {
+				  callback(message.content);
+				}
+			});
 		},
-		codeBlock: {
-			languages: [
-				{language: 'plaintext', label: 'Text'},
-				{language: 'php', label: 'PHP'},
-				{language: 'javacript', label: 'Javascript'},
-				{language: 'json', label: 'JSON'},
-				{language: 'html', label: 'HTML'},
-				{language: 'css', label: 'CSS'}
-			]
+		//IMAGE
+		a11y_advanced_options: true,
+		image_caption: true,
+		image_advtab: true,
+		image_title: true,
+		imagetools_cors_hosts: [document.domain],
+		images_upload_base_path:'/public/storage/photos',
+		images_upload_url: '',
+		automatic_uploads: true,
+		//TABLE
+		table_default_attributes: {
+			class:'table'
 		},
-		fontFamily: {
-			options: [
-				'default',
-				'Alex Brush',
-				'Arial, sans-serif',
-				'Asap',
-				'Asap Condensed',
-				'Courier New, Courier monospace',
-				'Georgia',
-				'Lucida Sans',
-				'Montserrat',
-				'Open Sans',
-				'Open Sans Condensed',
-				'Roboto',
-				'Roboto Slab',
-				'Tahoma',
-				'Times New Roman',
-				'Trebuchet MS',
-				'Ubuntu',
-				'Ubuntu Mono',
-				'Verdana'
-			],
-			supportAllValues: true
+		table_default_styles: {
 		},
+		table_responsive_width: true,
+		//TPL MEDIA
+		audio_template_callback: function(data) {
+			return '<audio controls>' + '\n<source src="' + data.source1 + '"' + (data.source1mime ? ' type="' + data.source1mime + '"' : '') + ' />\n' + '</audio>';
+		},
+		video_template_callback: function(data) {
+			return '<video width="' + data.width + '" height="' + data.height + '"' + (data.poster ? ' poster="' + data.poster + '"' : '') + ' controls="controls">\n' + '<source src="' + data.source1 + '"' + (data.source1mime ? ' type="' + data.source1mime + '"' : '') + ' />\n' + (data.source2 ? '<source src="' + data.source2 + '"' + (data.source2mime ? ' type="' + data.source2mime + '"' : '') + ' />\n' : '') + '</video>';
+		},
+		//TOC
+		toc_depth:6,
+		toc_class:'sv-toc',
+		branding: false,
+		draggable_modal: true,
+		font_formats: 'Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats; Alex Brush=Alex Brush, cursive; Asap=Asap, sans-serif; Asap Condensed=Asap Condensed, sans-serif; Montserrat=Montserrat, sans-serif; Open Sans=Open Sans, sans-serif; Open Sans Condensed=Open Sans Condensed, sans-serif; Roboto=Roboto, sans-serif; Roboto Slab=Roboto Slab, sans-serif; Ubuntu=Ubuntu, sans-serif; Ubuntu Mono=Ubuntu Mono, monospace;',
+		fontsize_formats: '8px 9px 10px 12px 14px 16px 18px 22px 24px 28px 32px 34px 36px 48px',
+		placeholder: 'Escribe el contenido...',
+		min_height: 500,
+		contextmenu: false,
+		// PASTE
+		paste_block_drop: true,
+		paste_data_image: true,
+		paste_merge_formats: true
+	}
+/*
+	let opt = {
+		
 		fontSize: {
 			options: [
 				'tiny',
@@ -137,63 +208,7 @@ _$().__proto__.editor = function(style = 'classic',options) {
 			],
 			shouldNotGroupWhenFull: true
 		},
-		language: 'es',
-		image: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight',
-			],
-			resizeOptios: [
-				{
-					name: 'resizeImage:original',
-					label:'Original 100%',
-					value: null
-				},
-				{
-					name: 'resizeImage:75',
-					label:'75%',
-					value: '75'
-				},
-				{
-					name: 'resizeImage:50',
-					label:'50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:25',
-					label:'25%',
-					value: '25'
-				}
-			],
-			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
-				'|',
-				'resizeImage',
-				'|',
-				'imageTextAlternative',
-				'linkImage'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells',
-				'tableCellProperties',
-				'tableProperties'
-			]
-		},
-		ckfinder: {
-			// uploadUrl: _$.Route('ckfinder_connector')+'?command=QuickUpload&type=Files',
-			uploadUrl: location.origin+"/admin/filemanager?editor=ckEditor",
-			options: {
-				language: 'es',
-				//connectorPath: _$.Route('ckfinder_connector')
-			}
-		},
+		
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: (inputHtml) => {
@@ -217,130 +232,115 @@ _$().__proto__.editor = function(style = 'classic',options) {
 		}			
 	}
 
-	for(let i = 1; i <= 6; i++){
-		opt.heading.options.push({
-			model: `heading${i}`,
-			title: `Heading ${i}`,
-			view: `h${i}`,
-			class: `ck-heading_heading${i}`
-		})
-	}
-
+*/
 	return this.each((el) => {
 		let s = _$(el).hasData('style') ? _$(el).data('style') : style,
-			tn = (CKSource, e) => {
-				const watchdog = new CKSource.Watchdog()
-				
-				watchdog.setCreator( ( element, config ) => {
-					return CKSource.Editor
-						.create( element, config )
-						.then( editor => {
-							_$.hooks.run('CKE.create', element, editor, config)
-							_$(element).data('cke', {editor, config})
-							_$('.ck-body-wrapper').insertAfter(element)
-							CKEditorInspector.attach(editor)
-							editor.element = element
-							return editor
-						} )
-				})
-				
-				watchdog.setDestructor( editor => {
-					_$.hooks.run('CKE.create', editor.element, editor)
-					_$(editor.element).removeData('cke')
-					return editor.destroy();
-				})
-				
-				watchdog.on( 'error', (e) => {
-					console.log("CKE_Error:", e);
-				})
+			d = _$(el).data()
 
-				watchdog
-					.create(e, opt)
-					.catch((e) => {
-						console.log("CKE_Error:", e);
-					})
+		opt.target = el;
 
-				window.CKE[s] = {CKSource, watchdog, e}
-			}
-		if (_$.hasProp(window.CKE, s)) {
-			return this.each((el) => {
-				if (el !== window.CKE[s].e) {
-					tn(window.CKE[s].CKSource, el)
-				}
-			})
-		} else {
+		if(s === 'inline'){
+			opt.inline = true
 			
-			return this.each((el) => {
-				if (s === 'inline') {
-				/* webpackChunkName: "ckeditor/[name].[chunkhash]" */	import('./ckeditor5-inline/build/ckeditor.js')
-						.then(cke => {
-							tn(CKSource, el)
-						})
-						.catch(e => {
-							console.log("CKE-LOADER_ Error:", e);
-						})
-				} else {
-				/* webpackChunkName: "ckeditor/[name].[chunkhash]" */	import('./ckeditor5/build/ckeditor.js')
-						.then(cke => {
-							tn(CKSource, el)
-						})
-						.catch(e => {
-							console.log("CKE-LOADER_ Error:", e);
-						})
-				}				
-			})
+		} else {
+			opt.menu = {
+				file: {
+					title: 'Archivo',
+					items: 'preview | print '
+				},
+				edit: {
+					title: 'Editar',
+					items: 'undo  redo | cut copy paste | selectall | searchreplace'
+				},
+				view: {
+					title: 'Ver',
+					items: 'code | visualaid visualchars visualblocks | spellchecker | fullscreen fullpage '
+				},
+				insert: {
+					title: 'Insertar',
+					items: 'image link template inserttable media | emoticons charmap | hr | anchor blockquote insertdatetime | toc tocupdate | pagebreak'
+				},
+				format: {
+					title: 'Formatos',
+					items: 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats fontformats fontsizes align | forecolor backcolor | removeformat'
+				},
+				tools: {
+					title: 'Herramientas',
+					items: 'spellchecker spellcheckerlanguage | codesample wordcount'
+				},
+				table: {
+					title: 'Tablas',
+					items: 'inserttable | cell row column | tableprops deletetable'
+				},
+			}
 		}
+		
+		if(_$(el).hasData('toolbar')) {
+			opt.toolbar = _$.normalizeData(d.toolbar);
+		}
+
+		if(_$(el).hasData('autoresize')) {
+			opt.plugins.push('autoresize')
+			opt.autoresize_bottom_margin = 50;
+		}
+
+		if(_$(el).hasData('menubar')) {
+			opt.menubar = _$(el).data();
+		}
+		
+
+		tinymce.init(opt);
 	});
 }
 
-$(() => {
+_$(() => {
 
-	$('a[href]').each((a)=> {
-		var link = $(a).attr('href');
+	_$('a[href]').each((a)=> {
+		var link = _$(a).attr('href');
 		
 		if (link === location.href) {
-			$(a).addClass('active')
+			_$(a).addClass('active')
 		}
 	});
 
-	$('.sidebar-toggle').click((e) => {
+	_$('.sidebar-toggle').click((e) => {
 		e.preventDefault()
-		$("#sidebar").toggleClass('open')
+		_$("#sidebar").toggleClass('open')
 	})
 
-	$('.sidebar .nav .nav-item.dropdown').hover(
+	_$('.sidebar .nav .nav-item.dropdown').hover(
 		function(e) {
-			let el_link = $('[data-bs-toggle]', this)
-			if (!$.empty(el_link)) {
-				let Menu = $(el_link.next('ul'));
+			let el_link = _$('[data-bs-toggle]', this)
+			if (!_$.empty(el_link)) {
+				let Menu = _$(el_link.next('ul'));
 				Menu.addClass('show')
 				el_link.addClass('show')
 			}
 		},
 		function(e) {
-			let el_link = $('[data-bs-toggle]', this)
-			if (!$.empty(el_link)) {
-				let Menu = $(el_link.next('ul'));
+			let el_link = _$('[data-bs-toggle]', this)
+			if (!_$.empty(el_link)) {
+				let Menu = _$(el_link.next('ul'));
 				Menu.removeClass('show')
 				el_link.removeClass('show')
 			}
 		}
 	)
 
-	$('.sidebar a[href]').click(function(e){
+	_$('.sidebar a[href]').click(function(e){
 		e.preventDefault()
-		let h = $(this).attr('href');
+		let h = _$(this).attr('href');
 		if (h !== '#') {
 			location.assign(h);
 		}
 	})
 
-	$('[data-role*=table]').dataTable()
+	_$('[data-role*=table]').dataTable()
 
-	if ($('[data-role*=ckeditor]').length > 0) {
-		$('[data-role*=ckeditor]').editor()
+	if (_$('[data-role=editor]').length > 0) {
+		_$('[data-role=editor]').editor()
 	}
-	if ($('[data-role*=codeditor]').length > 0) {
-		$('[data-role*=codeditor]').codeditor()
+	if (_$('[data-role*=codeditor]').length > 0) {
+		_$('[data-role*=codeditor]').codeditor()
 	}
 })

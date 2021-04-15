@@ -113,6 +113,11 @@ class SettingsSeeder extends Seeder
                             ]
                         ]
                     ],
+                    'Archivos'=> [
+                        'url' => route('unisharp.lfm.show'),
+                        'order' => 3,
+                        'level' => 'read create'
+                    ],
                     'Plantillas' => [
                         'url' => route('template'),
                         'level' => 'ap_page read',
@@ -141,6 +146,7 @@ class SettingsSeeder extends Seeder
                         'order' => 9,
                         'level' => 'ap_config_manage read create'
                     ],
+                    
                     'Usuarios' => [
                         'url' => route('user'),
                         'order' => 10,
@@ -174,3 +180,4 @@ class SettingsSeeder extends Seeder
         $style->settings()->save($settings);
     }
 }
+

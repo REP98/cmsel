@@ -6943,7 +6943,7 @@ textarea.form-control-lg {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
-.shadow-sm, .ck[contenteditable] {
+.shadow-sm, .mce-content-body {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
@@ -12590,8 +12590,13 @@ footer.footer {
 .dataTable-wrapper .dataTable-bottom .dataTable-pagination .dataTable-pagination-list {
   margin: 0;
 }
-.ck[contenteditable] {
+.mce-content-body {
   background-color: #fff;
+  min-height: 55vh;
+}
+
+.tox .tox-editor-header {
+  max-width: 100% !important;
 }
 
 .ck-balloon-panel {

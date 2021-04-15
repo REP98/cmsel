@@ -1,7 +1,13 @@
-.ck[contenteditable]{
+.mce-content-body{
 	background-color: #fff;
 	@extend .shadow-sm;
+	min-height: 55vh;
 }
+
+.tox .tox-editor-header{
+	max-width: 100% !important;
+}
+
 
 .ck-balloon-panel{
 	max-width: 100%;
