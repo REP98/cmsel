@@ -125,7 +125,7 @@ class PageController extends Controller
 		    'parent_id' => empty($request->parent) ? 0 : $request->parent
 		]);
 		$user->pages()->save($page);
-		$style->pages()->attach($page->id)
+		$style->pages()->attach($page->id);
 		
 		$this->Setting->pages($page->id, $request->condition);
 
