@@ -12,7 +12,6 @@ const bs = require('bootstrap');
 _$.Plyr = require('plyr');
 _$.Route = require('./routes.js').route;
 
-
 _$.each(bs, (n, i) => {
 	if (!_$.hasProp(_$().__proto__, i.toLowerCase())) {
 		_$().__proto__[i.toLowerCase()] = function(...args) {
@@ -24,6 +23,7 @@ _$.each(bs, (n, i) => {
 	}
 })
 
+_$.bs = bs
 
 /**
  * Convierte el JSON exportado por laravel atravez de la 
@@ -88,6 +88,7 @@ function setDataFromJson(el, data, exclude = [], transform = {}) {
 	data.forEach( (table) => {
 		let trb = _$('<tr>')
 			trb.attr('id', 'id' in table ? table.id : _$.uniqueId('table'))
+			trb.data('slug', table.slug)
 		_$.each(table, (valore, n) => {
 			if (n.indexOf('slug') === -1 && exclude.indexOf(n) === -1) {
 				let td = _$('<td>')
@@ -204,7 +205,7 @@ _$().__proto__.dataTable = function(options){
 				select: _$(el).find('thead tr th').length - 1,
 				sortable:false,
 				render: function(data, cell, row){
-					let id = _$(row).attr('id')
+					let id = _$(row).data('slug')
 					return `<div class="actions d-flex justify-content-center w-100">
 					<a href="${_$.Route('page.edit', [id])}" class="fg-dark fg-green-hover">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
@@ -227,12 +228,130 @@ _$().__proto__.dataTable = function(options){
 	});
 }
 
-window.$ = window._$
+function setModal($title, $content, $actions, $options = {}) {
+	let foot = !_$.empty($actions) ? `<div class="modal-footer">${$actions.join( )}</div>` : ''
+	return `<div id="${_$.uniqueId('modal-bs')}" class="modal fade" tabindex="-1" aria-labelledy="titlemodal" aria-hide="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg  
+				${!_$.hasProp($options, 'scrollable') ? '' : $options.scrollable ? 'modal-dialog-scrollable' : ''}">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="titlemodal">${$title}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">${$content}</div>
+				${foot}
+			</div>
+		</div>
+	</div>`;
+}
+window.getSelectedItems = function(items){
+	console.log(window.iamel,items)
+	delete window.iamel
+}
+_$().__proto__.lfm = function(type = 'Files', route_prefix = '/dashboard/filemanager'){
+	
+	return this.each((el) => {
+		
+		type = _$(el).hasData('lfm-type') ? _$(el).data('lfm-type') : type
+		route_prefix = _$(el).hasData('lfm-prefix') ? _$(el).data('lfm-prefix') : route_prefix
 
-window.$.fn = _$().__proto__
+		_$(el).click(function(){
+			let target_input = _$(_$(el).data('input')),
+				target_preview = _$(_$(el).data('preview')),
+				target_modal = _$.parseHTML(setModal('Administrador de Archivos'), ''),
+				targe_content
 
-global.$ = $
+			target_modal  = _$(target_modal)
+			target_modal.style({
+				minHeight: '70vh',
+				minWidth: '80vh',
+				width: '90%'
+			})
+			targe_content = target_modal.find('.modal-dialog .modal-content .modal-body')
+			axios
+				.get(route_prefix, {
+					params: {
+						lang: 'es',
+						modal: 'true',
+						callback: 'getSelectedItems',
+						type:type
+					}
+				})
+				.then((response) => {
+					window.iamel = el
+					_$.setFree$()
+					_$(targe_content).html(response.data);
+				})
+				.catch((error) => {
+					console.error(error)
+				})
+			/*
+			window.SetUrl = function (items) {
+				console.log(items);
+		      var file_path = items.map(function (item) {
+		        return item.url;
+		      }).join(',');
 
+		      // set the value of the desired input to image url
+		      target_input.value = file_path;
+		      target_input.dispatchEvent(new Event('change'));
+
+		      // clear previous preview
+		      target_preview.innerHtml = '';
+
+		      // set or change the preview image src
+		      items.forEach(function (item) {
+		        let img = document.createElement('img')
+		        img.setAttribute('style', 'height: 5rem')
+		        img.setAttribute('src', item.thumb_url)
+		        target_preview.appendChild(img);
+		      });
+
+		      // trigger change event
+		      target_preview.dispatchEvent(new Event('change'));
+		    }
+		    */
+			target_modal.appendTo('body')
+			target_modal.modal().show()
+		})
+	})
+}
+/*
+var lfm = function(id, type, options) {
+  let button = document.getElementById(id);
+
+  button.addEventListener('click', function () {
+    var route_prefix = (options && options.prefix) ? options.prefix : '/laravel-filemanager';
+    var target_input = document.getElementById(button.getAttribute('data-input'));
+    var target_preview = document.getElementById(button.getAttribute('data-preview'));
+
+    window.open(route_prefix + '?type=' + options.type || 'file', 'FileManager', 'width=900,height=600');
+    window.SetUrl = function (items) {
+      var file_path = items.map(function (item) {
+        return item.url;
+      }).join(',');
+
+      // set the value of the desired input to image url
+      target_input.value = file_path;
+      target_input.dispatchEvent(new Event('change'));
+
+      // clear previous preview
+      target_preview.innerHtml = '';
+
+      // set or change the preview image src
+      items.forEach(function (item) {
+        let img = document.createElement('img')
+        img.setAttribute('style', 'height: 5rem')
+        img.setAttribute('src', item.thumb_url)
+        target_preview.appendChild(img);
+      });
+
+      // trigger change event
+      target_preview.dispatchEvent(new Event('change'));
+    };
+  });
+};
+*/
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the

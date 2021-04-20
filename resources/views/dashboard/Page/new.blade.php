@@ -15,114 +15,154 @@
 	</div>
 @endif
 
-<form class="form" id="page" method="post" action="@if(!empty($edit)) {{route('page.update', [$page->id])}} @else {{route('page.store')}} @endif">
-	@csrf
+<form class="form" id="page" method="post" action="@if(!empty($edit)) {{route('page.update', [$page->slug])}} @else {{route('page.store')}} @endif">
 	<!-- CAMPOS OCULTOS -->
-	<input type="hidden" name="content" id='content'>
+	@csrf
+	@if(!empty($edit))
+	{{ method_field('PATCH') }}
+	@endif
+	<input type="hidden" name="content" id='content' value="@if(!empty($edit)) {!! urlencode($page->content) !!} @endif">
+	<input type="hidden" name="js" id='js-input' value="@if(!empty($edit)) {!! $style->js !!}@endif">
+	<input type="hidden" name="css" id='css-input' value="@if(!empty($edit)) {!! $style->css !!}@endif">
+	<!-- FIN CAMPOS OCULTOS -->
+	<div class="d-flex justify-content-between align-items-center mb-3">
+	<h2>
+		@empty($edit)
+		{{__('Nueva Página')}}
+		@else
+		{{__('Actualizar Página')}}
+		@endempty
+	</h2>
+	<div class="btn-group" role="group" aria-label="Grupo de Opciones Avanzadas">
+		<button type="submit" class="btn btn-outline-success" id="savepage">
+		<i class="fas fa-save"></i> {{__('Guardar')}}</button>
+	</div>
+</div>
+	<!-- TiTULO Y CONDIFICONALES -->
+	<div class="row mb-2">
+		<div class="col-12 d-flex justify-content-around">
+			<div class="input-group w-50 d-inline-flex me-2" aria-label="Condiciones">
+				<span class="input-group-text" id="text">{{__('Página Padre')}}</span>
+				<select class="form-select" name="parent">
+					<option value="">{{__('Ningúna')}}</option>
+					@foreach($pages as $p)
+					@if($p->id !== $page->id)
+					<option value="{{$p->id}}" @if(!empty($edit) && $page->parent_id === $p->id) selected @endif>{{$p->title}}</option>
+					@endif
+					@endforeach
+				</select>
+			</div>
+			@php
+			if(empty($edit)) {
+				$condition = [];
+			}			
+			@endphp
+			@include('component.condition_fields', $condition)
+		</div>
+		<div class="col-12 my-2">
+			<input type="text" class="form-control w-100 mb-2" name="title" placeholder="Ingrese su titulo" value="@if(!empty($edit)) {{$page->title}} @endif">
+		</div>
+		@if(!empty($edit))
+		<div class="col-12">
+			<a href="{{url('/').'/'.$page->slug}}" class="link-primary" id="slug">{{url('/').'/'.$page->slug}}</a>
+		</div>
+		@endif
+	</div>
+	<!-- FIN TITULO -->
+	<!-- NAVBAR -->
 	<nav class="w-100">
-		<ul class="nav nav-tabs nav-fill" id="tabOptions" role="tablist">
+		<ul class="nav nav-tabs nav-fill" id="taboptions" role="tablist">
 			<li class="nav-item" role="presentation">
-				<a href="#" class="nav-link active" id="tinymce-editor" data-bs-toogle="tab" data-target="#tinymce" role="tab" aria-selected="true" aria-control="tinymce">Editor</a>
+				<a href="#tinymce" class="nav-link active" id="tinymce-editor" data-bs-toggle="tab" data-bs-target="#tinymce" role="tab" aria-selected="true" aria-control="tinymce">Editor</a>
 			</li>
 			<li class="nav-item" role="presentation">
-				<a href="#" class="nav-link" id="html-editor" data-bs-toogle="tab" data-target="#html" role="tab" aria-selected="false" aria-control="html">HTML</a>
+				<a href="#html" class="nav-link" id="html-editor" data-bs-toggle="tab" data-bs-target="#html" role="tab" aria-selected="false" aria-control="html">HTML</a>
 			</li>
 			<li class="nav-item" role="presentation">
-				<a href="#" class="nav-link" id="css-editor" data-bs-toogle="tab" data-target="#css" role="tab" aria-selected="false" aria-control="css">CSS</a>
+				<a href="#css" class="nav-link" id="css-editor" data-bs-toggle="tab" data-bs-target="#css" role="tab" aria-selected="false" aria-control="css">CSS</a>
 			</li>
 			<li class="nav-item" role="presentation">
-				<a href="#" class="nav-link" id="js-editor" data-bs-toogle="tab" data-target="#js" role="tab" aria-selected="false" aria-control="js">JS</a>
-			</li>
-			
+				<a href="#js" class="nav-link" id="js-editor" data-bs-toggle="tab" data-bs-target="#js" role="tab" aria-selected="false" aria-control="js">JS</a>
+			</li>			
 		</ul>
 	</nav>
-	<div class="tab-content" id="contentCampo">
-		<div class="tab-pane fade show" id="tinymce" role="tabpanel" aria-labelledby="tinymce-editor">
-			<div class="row mb-2">
-				<div class="col-12 d-flex justify-content-around">
-					<div class="inpt-group w-50 d-inline-flex me-2" aria-label="Condiciones">
-						<span class="input-group-text" id="text">Página Padre</span>
-						<select class="form-select" name="parent">
-							<option value="">Ningúna</option>
-							@foreach($pages as $p)
-							<option value="{{$p->id}}" @if(!empty($edit) && $page->parent_id === $p->id) selected @endif>{{$p->title}}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="inpt-group w-50 d-inline-flex me-2" aria-label="Condiciones">
-						<span class="input-group-text" id="text">Mostrar en</span>
-						<select class="form-select" name="condition[type]">
-							@php
-								$condition_type = [
-										'index' => 'Principal',
-										'category' => 'Categoría',
-										'archive' => 'Archivo',
-										'post' => 'Entradas',
-										'custom_post' => 'Entradas Personalizadas'
-								];
-							@endphp
-							@foreach($condition_type as $name => $value)
-							<option value="{{$name}}">{{$value}}</option>
-							@endforeach
-						</select>
-						<span class="input-group-text" id="text">si</span>
-						<select class="form-select" disabled id="loadajax" name="condition[ifset]">
-							<option value="all">Todos</option>
-						</select>
-					</div>
-					<div class="btn-group" role="group" aria-label="Grupo de Opciones Avanzadas">
-						<button type="submit" class="btn btn-outline-success" id="savepage"> Guardar</button>
-						<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalcode">
-							<i class="fas fa-cog"></i> <span class="d-none-md">CSS/JS</span>
-						</button>
-					</div>
-				</div>
-			</div>
-			
-			<input type="text" class="form-control w-100 mb-2" name="title" placeholder="Ingrese su titulo">
-			@include('component.editor-inline')
+	<!-- END NAVBAR -->
+	<div class="tab-content" id="contentcampo">
+		@php
+			$editorHTML = ['attr' => 'id="html-codeditor"', 'langCode' => 'htmlmixed'];
+			$editorCSS = ['attr' => 'id="css-codeditor"', 'langCode' => 'css'];
+			$editorJS = ['attr' => 'id="js-codeditor"', 'langCode' => 'javascript'];
+			$EditorTMC = [];
+			if (!empty($edit)) {
+				$editorCSS['content'] = urldecode($style->css);
+				$editorJS['content'] = urldecode($style->js);
+				$EditorTMC = ['content' => urldecode($page->content) ];
+				$editorHTML['content'] = urldecode($page->content);
+			}
+		@endphp
+		<div class="tab-pane fade show active" id="tinymce" role="tabpanel" aria-labelledby="tinymce-editor">
+			@include('component.editor-inline', $EditorTMC)
 		</div>
+
 		<div class="tab-pane fade" id="html" role="tabpanel" aria-labelledby="html-editor">
-			@include('component.codeditor', ['attr' => 'id="html-codeditor"'])
+			<h5 class="my-2">Editor HTML</h5>
+			@include('component.codeditor', $editorHTML) 
 		</div>
 		<div class="tab-pane fade" id="css" role="tabpanel" aria-labelledby="css-editor">
-			@include('component.codeditor', ['attr' => 'id="css-codeditor" name="style"', 'langCode' => 'text/css'])
+			<h5 class="my-2">Editor CSS</h5>
+			@include('component.codeditor', $editorCSS)
 		</div>
 		<div class="tab-pane fade" id="js" role="tabpanel" aria-labelledby="js-editor">
-			@include('component.codeditor', ['attr' => 'id="js-codeditor" name="script"', 'langCode' => 'aplication/javascript'])
+			<h5 class="my-2">Editor JS</h5>
+			@include('component.codeditor', $editorJS)
 		</div>
 	</div>
 </form>
 @endsection
 @section('script')
 @parent
+/* SET COMMENT BY DEFAULTS*/
+@empty($edit)
+_$("#html-codeditor").data('code').getDoc().setValue('<!-- Código del editor -->\n')
+_$("#css-codeditor").data('code').getDoc().setValue('/*-- Código CSS para el página */\n')
+_$("#js-codeditor").data('code').getDoc().setValue('/** Código JS para la página */\n')
+@endempty
+var delay, tmcDelay
 
-_$('[data-bs-toogle="tab"]').on('show.bs.tab', function(e){
-	let target = e.target
-	let previusTab = e.relatedTarget
-
-	console.dir(target, previusTab)
+_$("#html-codeditor").data('code').on('change',function(){
+	clearTimeout(delay);
+	if (_$("#html-editor").hasClass('active')) {
+		delay = setTimeout(updatePreview, 300);
+	}
 })
+
+function updatePreview() {
+	var editor = _$("#html-codeditor").data('code')
+	tinymce.activeEditor.setContent(editor.getValue())
+}
+function updateCode(){
+	let editor = _$.getValueActiveEditor(false)
+	_$("#html-codeditor").data('code').setValue(editor)
+}
+
+tinymce.activeEditor.on('change', function(e){
+	let editor = e.target;
+	clearTimeout(tmcDelay);
+	if (_$('#tinymce').hasClass('active')) {
+		tmcDelay = setTimeout(updateCode, 300);
+	}
+})
+
 _$('form#page').on('submit', function(e){
 	e.preventDefault();
+	let tiny = tinyMCE.activeEditor.getBody().innerHTML,
+		css = _$("#css-codeditor").data('code').getValue(),
+		js = _$("#js-codeditor").data('code').getValue()
 
-	let ta = _$.getValueActiveEditor(),
-		tc = _$('[data-role="codeditor"]').data('code'),
-		content = ta.editor.getData(),
-		code = tc.getValue(),
-		parse = _$.parseHTML(content),
-		outHtml = '',
-		title = _$(parse[0]).text()
-		parse.forEach((e, i) => {
-			if (i > 0) {
-				outHtml += _$(e).outerHTML()
-			}
-		})
-
-		_$('input[name="title"]').val(title)
-		_$('input[name="content"]').val(encodeURIComponent(outHtml.trim()))
-		_$('input[name="style"]').val(encodeURIComponent(code.trim()))
+	_$('input[name="content"]').val(encodeURIComponent(tiny.trim()))
+	_$('input[name="css"]').val(encodeURIComponent(css.trim()))
+	_$('input[name="js"]').val(encodeURIComponent(js.trim()))
 		
-		this.submit()
+	this.submit()
 })
 @endsection

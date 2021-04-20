@@ -9,7 +9,7 @@
         "creativeorange/gravatar": "^1.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.3",
         "halivert/laravel-js-routes": "^4.1",
         "illuminate/database": "^7.30|^8.0",
         "illuminate/support": "^7.30|^8.0",
@@ -19,6 +19,7 @@
         "laravel/ui": "^3.2",
         "spatie/laravel-permission": "^4.0",
         "spatie/laravel-sluggable": "^3.0",
+        "swiftmailer/swiftmailer": "^6.2",
         "unisharp/laravel-filemanager": "^2.2"
     },
     "require-dev": {

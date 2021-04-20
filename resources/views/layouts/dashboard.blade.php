@@ -28,7 +28,7 @@
 		<div class="wrapper">
 			<nav class="sidebar open" id="sidebar">
 				<div class="brand">
-					<img src="@if(empty(settings('image', 'logo'))) {{asset('storage/default/logo.png')}} @else {{asset(settings('image', 'logo'))}} @endif" class="logo" alt="{{settings('general', 'site_title')}}">
+					<img src="@if(empty(settings('image', 'logo'))) {{asset('storage/photos/shares/default/logo.png')}} @else {{asset(settings('image', 'logo'))}} @endif" class="logo" alt="{{settings('general', 'site_title')}}">
 				</div>
 				<nav class="nav flex-column">
 					@foreach(settings('menu', 'dashboard') as $n => $v)
@@ -90,11 +90,11 @@
 					<ul class="navbar-nav ms-auto">
 						<li class="nav-item dropdown">
 							<a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-role="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-								@if(Gravatar::exists(Auth::user()->email))
+								{{-- @if(Gravatar::exists(Auth::user()->email))
 								<img src="{{Gravatar::get(Auth::user()->email, 'small')}}" class="profile-gravatar">
-								@else
+								@else --}}
 								<img src="{{asset(settings('image', 'avatar'))}}" class="profile-gravatar">
-								@endif
+								{{--@endif --}}
 								<span>{{ $user->name }}</span>
 							</a>
 
@@ -118,14 +118,6 @@
 				<main class="content">
 					<div class="container-fluid p-0">
 						@yield('content')
-						@include('component.editor', ['attr'=>[
-							'data' => [
-								'toolbar' => json_encode([
-									'styleselect | bold italic underline strikethrough | inserttable | image media link openlink unlink | alignleft aligncenter alignright alignjustify | numlist bullist | hr code restoredraft'
-								]),
-								'menubar'=> 'false'
-							]
-							]])
 					</div>
 				</main>
 				<footer class="footer">

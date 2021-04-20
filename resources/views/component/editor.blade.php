@@ -7,7 +7,7 @@
 @endforeach
 @endif
 >
-	@if(!empty($editorContent))
-	{!! $editorContent !!}
+	@if(!empty($content))
+	{!! $content !!}
 	@endif
 </textarea >

@@ -59,6 +59,9 @@ const routes = {
     "page.edit": {
         "uri": "dashboard\/page\/{page}\/edit"
     },
+    "page.tojson": {
+        "uri": "dashboard\/page\/listtojson"
+    },
     "unisharp.lfm.show": {
         "uri": "dashboard\/filemanager"
     },

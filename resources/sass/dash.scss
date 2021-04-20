@@ -4,12 +4,13 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 @import '~codemirror/lib/codemirror.css';
-@import '~codemirror/theme/monokai.css';
+/* @import '~codemirror/theme/monokai.css'; */
+@import '~codemirror/theme/neat.css';
 @import '~codemirror/addon/fold/foldgutter.css';
 @import '~codemirror/addon/hint/show-hint.css';
-@import '~codemirror/addon/dialog/dialog.css';
+@import '~codemirror/addon/dialog/dialog.css'; /*
 @import '~codemirror/addon/search/matchesonscrollbar.css';
-@import '~codemirror/addon/scroll/simplescrollbars.css';
+@import '~codemirror/addon/scroll/simplescrollbars.css'; */
 @import '~codemirror/addon/display/fullscreen.css';
 @import 'color';
 
@@ -404,11 +405,18 @@ footer.footer{
 		background-color: #272822;
 	}
 }
-
+/*
 .CodeMirror{
-	min-height: 30vh;
+	
 	transition: top 0.5s;
 }
+*/
+
+.CodeMirror-sizer {
+  margin-left: 38px;
+  min-height: 30vh;
+}
+
 .CodeMirror-fullscreen {
     position: fixed;
     top: 0;
@@ -416,6 +424,11 @@ footer.footer{
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.CodeMirror-linenumber {
+  min-width: 1.375rem;
+  left: 0;
 }
 
 

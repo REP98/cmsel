@@ -57,8 +57,8 @@ require('codemirror/addon/search/jump-to-line.js');
 require('codemirror/addon/search/matchesonscrollbar.js');
 require('codemirror/addon/search/match-highlighter.js');
 // Scroll
-require('codemirror/addon/scroll/annotatescrollbar.js');
-require('codemirror/addon/scroll/simplescrollbars.js');
+/*require('codemirror/addon/scroll/annotatescrollbar.js');
+require('codemirror/addon/scroll/simplescrollbars.js'); */
 // Coments
 require('codemirror/addon/comment/comment.js');
 require('codemirror/addon/comment/continuecomment.js');
@@ -76,14 +76,14 @@ CodeMirror.commands.autocomplete = function(cm) {
 
 _$().__proto__.codeditor = function() {
 	return this.each((el) => {
-		let code = CodeMirror.fromTextArea(el,{
-			mode: _$(this).data('lang'),
+		let code = CodeMirror.fromTextArea(el, {
+			mode: _$(this).data('lang').trim(),
 			lineNumbers: true,
 			autoCloseBrackets:true,
 			styleActiveLine: true,
 			styleSelectedText: true,
 			matchBrackets: true,
-			theme:'monokai',
+			theme:'neat',
 			autoCloseTags:true,
 			keyMap: "sublime",
 			height:500,
@@ -100,7 +100,7 @@ _$().__proto__.codeditor = function() {
 				"Alt-F": "findPersistent"
 			},
 			foldGutter: true,
-			scrollbarStyle: "simple",
+			// scrollbarStyle: "simple",
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		})
 		_$(el).data('code', code)

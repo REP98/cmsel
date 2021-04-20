@@ -47,7 +47,7 @@ class Page extends Model
     // Require
     public function styles(): BelongsToMany
     {
-    	return $this->belongsToMany(Setting::class)->withTimestamps();
+    	return $this->belongsToMany(Style::class)->withTimestamps();
     }
 
     public function getSlugOptions(): SlugOptions

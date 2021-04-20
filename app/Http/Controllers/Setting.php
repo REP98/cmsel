@@ -36,7 +36,7 @@ class Setting extends Controller
 
 	public function index(){
 
-		return view('dashboard.settings.index');
+		return view('dashboard.settings.index', ['setting' => $this]);
 	}
 
 	public function get( $type = null, $key = null)

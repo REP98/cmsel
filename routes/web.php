@@ -13,7 +13,36 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::view('/', 'welcome');
+// Route::view('/', 'welcome');
+Route::get('/', function(){
+	$page = new \App\Http\Controllers\PageController();
+	$pag = settings('pages');
+	$view = '';
+	foreach ($pag as $key => $value) {
+		if($value['type'] === 'index') {
+			$Mp = \App\Models\Page::find($key);
+			$view = $page->show($Mp);
+			break;
+		}
+	}
+	return $view;
+});
+
+Route::get('/blog/{name}', function($request){
+	$name = $request->name;
+	
+	/*$page = new \App\Http\Controllers\PageController();
+	$pag = settings('pages');
+	$view = '';
+	foreach ($pag as $key => $value) {
+		if($value['type'] === 'index') {
+			$Mp = \App\Models\Page::find($key);
+			$view = $page->show($Mp);
+			break;
+		}
+	}
+	return $view;*/
+});
 
 Auth::routes();
 
@@ -26,7 +55,7 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		Route::get('/test/{view}', [App\Http\Controllers\DashboardController::class, 'test']);
 		// Pages
 		Route::resource('page', \App\Http\Controllers\PageController::class)->middleware(['permission:ap_page read']);
-
+		Route::get('/page/listtojson', [\App\Http\Controllers\PageController::class, 'getJson'])->name('page.tojson');
 		// Medios
 		Route::group(['prefix' => 'filemanager', 'middleware' => ['auth:sanctum', 'permission:ap_sessions_admin']], function () {
 			\UniSharp\LaravelFilemanager\Lfm::routes();
@@ -65,7 +94,17 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 			$v = settings('menu', 'dashboard.Archivos',[
 	                        'url' => route('unisharp.lfm.show'),
 	                        'order' => 3,
-	                        'level' => 'read create'
+	                        'level' => 'read create',
+	                        'submenu' => [
+	                        	'Images' =>[
+                                    'url' => route('unisharp.lfm.show').'?type=Images&lang=es',
+                                    'level' => 'read create'
+                                ],
+                                'Archivos' => [
+                                    'url' => route('unisharp.lfm.show').'?type=Files&lang=es',
+                                    'level' => 'read create'
+                                ]
+	                        ]
 	                    ]);
 			dd($v);
 		});
