@@ -53,8 +53,14 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		Route::get('/editor', function(){ return 'PÁGINA DE EDICION'; })->name('editors')->middleware(['permission:ap_config_manage read create']);
 
 		Route::get('/test/{view}', [App\Http\Controllers\DashboardController::class, 'test']);
-		// Pages
-		Route::resource('page', \App\Http\Controllers\PageController::class)->middleware(['permission:ap_page read']);
+		// Pages and Template
+		Route::resources([
+			'page' => \App\Http\Controllers\PageController::class,
+			'templante' => \App\Http\Controllers\TemplateController::class
+		])->middleware(['permission:ap_page read']);
+
+		Route::get('/template/{type}', [\App\Http\Controllers\TemplateController::class, 'indextype'])->middleware(['permission:ap_page read']);
+
 		Route::get('/page/listtojson', [\App\Http\Controllers\PageController::class, 'getJson'])->name('page.tojson');
 		// Medios
 		Route::group(['prefix' => 'filemanager', 'middleware' => ['auth:sanctum', 'permission:ap_sessions_admin']], function () {
