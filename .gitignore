@@ -12,3 +12,5 @@ Homestead.json
 Homestead.yaml
 *log*
 *.sublime*
+*-lock.json
+*lock*
