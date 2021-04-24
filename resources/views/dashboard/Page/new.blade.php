@@ -3,14 +3,14 @@
 @section('content')
 @if (session('status'))
     <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-	   {{ session('status') }}
+	   {!! session('status') !!}
 	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	</div>
 @endif
 
 @if (session('error'))
     <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-	   {{ session('error') }}
+	   {!! session('error') !!}
 	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	</div>
 @endif
@@ -54,8 +54,12 @@
 			</div>
 			@php
 			if(empty($edit)) {
-				$condition = [];
-			}			
+				$condition = [
+					'loadScipt' => false
+				];
+			} else {
+				$condition['loadScipt'] = false;
+			}
 			@endphp
 			@include('component.condition_fields', $condition)
 		</div>
@@ -64,7 +68,7 @@
 		</div>
 		@if(!empty($edit))
 		<div class="col-12">
-			<a href="{{url('/').'/'.$page->slug}}" class="link-primary" id="slug">{{url('/').'/'.$page->slug}}</a>
+			<a href="{{url('/').'/'.$page->slug}}" class="link-primary" id="slug" target="_blank">{{url('/').'/'.$page->slug}}</a>
 		</div>
 		@endif
 	</div>
@@ -97,7 +101,6 @@
 				$editorCSS['content'] = urldecode($style->css);
 				$editorJS['content'] = urldecode($style->js);
 				$EditorTMC = ['content' => urldecode($page->content) ];
-				$editorHTML['content'] = urldecode($page->content);
 			}
 		@endphp
 		<div class="tab-pane fade show active" id="tinymce" role="tabpanel" aria-labelledby="tinymce-editor">
@@ -126,7 +129,11 @@
 _$("#html-codeditor").data('code').getDoc().setValue('<!-- Código del editor -->\n')
 _$("#css-codeditor").data('code').getDoc().setValue('/*-- Código CSS para el página */\n')
 _$("#js-codeditor").data('code').getDoc().setValue('/** Código JS para la página */\n')
+
+@else
+tinyMCE.activeEditor.setContent(`{!! $page->content !!}`)
 @endempty
+
 var delay, tmcDelay
 
 _$("#html-codeditor").data('code').on('change',function(){

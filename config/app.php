@@ -241,7 +241,7 @@ return [
 
     'jsroutes'=>[
         'name'=>'route.js',
-        'methods'=>['GET','POST'],
+        'methods'=>['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         'include'=>[],
         'exclude'=>[]
     ],

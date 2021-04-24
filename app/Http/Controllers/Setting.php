@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Setting as SettinsModel;
 
+use Exception;
+
 class Setting extends Controller
 {
 
@@ -92,7 +94,7 @@ class Setting extends Controller
 		
 		if (array_key_exists($key, $data)) {
 			if (is_array($data[$key])) {
-				$data[$key] = array_merge_recursive($data[$key], $value);
+				$data[$key] = array_merge($data[$key], $value);
 			} else {
 				$data[$key] = $value;
 			}  
@@ -106,6 +108,11 @@ class Setting extends Controller
 		$this->__setModel([$type => $data]);
 
 		return $this->sm[$type];
+	}
+
+	public function setdata(Request $request)
+	{
+		return response()->json($request->all());
 	}
 
 	public function __call($name, $arguments = [])

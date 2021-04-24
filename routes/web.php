@@ -89,23 +89,17 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		// Ajustes
 		Route::prefix('setting')->middleware(['permission:ap_user_manager read'])->group(function(){
 			Route::get('/', [\App\Http\Controllers\Setting::class, 'index'])->name('setting')->middleware(['permission:ap_config_manage create read', 'role:SuperAdmin|Administrador']);
+			Route::post('/', [\App\Http\Controllers\Setting::class, 'setdata'])->name('setting.set')->middleware(['permission:ap_config_manage create read', 'role:SuperAdmin|Administrador']);
 		});
+
 		Route::any('/test', function(){
-			$v = settings('menu', 'dashboard.Archivos',[
-	                        'url' => route('unisharp.lfm.show'),
-	                        'order' => 3,
-	                        'level' => 'read create',
-	                        'submenu' => [
-	                        	'Images' =>[
-                                    'url' => route('unisharp.lfm.show').'?type=Images&lang=es',
-                                    'level' => 'read create'
-                                ],
-                                'Archivos' => [
-                                    'url' => route('unisharp.lfm.show').'?type=Files&lang=es',
-                                    'level' => 'read create'
-                                ]
-	                        ]
-	                    ]);
+			$v = settings('pages', 2, [
+				'type' => 'archive',
+				'condition' => [
+					"archive" => "singlepost"
+				]
+			]);
+
 			dd($v);
 		});
 	});

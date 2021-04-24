@@ -14,6 +14,9 @@ const routes = {
     "debugbar.assets.js": {
         "uri": "_debugbar\/assets\/javascript"
     },
+    "debugbar.cache.delete": {
+        "uri": "_debugbar\/cache\/{key}\/{tags?}"
+    },
     "login": {
         "uri": "login"
     },
@@ -58,6 +61,12 @@ const routes = {
     },
     "page.edit": {
         "uri": "dashboard\/page\/{page}\/edit"
+    },
+    "page.update": {
+        "uri": "dashboard\/page\/{page}"
+    },
+    "page.destroy": {
+        "uri": "dashboard\/page\/{page}"
     },
     "page.tojson": {
         "uri": "dashboard\/page\/listtojson"
@@ -153,6 +162,9 @@ const routes = {
         "uri": "dashboard\/user\/permissions"
     },
     "setting": {
+        "uri": "dashboard\/setting"
+    },
+    "setting.set": {
         "uri": "dashboard\/setting"
     }
 };

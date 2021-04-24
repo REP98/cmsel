@@ -1,6 +1,6 @@
-<div class="input-group w-50 me-2" aria-label="Condiciones" id="condition_fields">
+<div class="input-group w-50 me-2 condition_fields" aria-label="Condiciones">
 	<span class="input-group-text" id="text">{{__('Mostrar en')}}</span>
-	<select class="form-select" name="condition[type]" id="condition_type">
+	<select class="form-select condition_type" name="condition[type]">
 		@php
 			$condition_type = [
 					'url' => 'Url de la Página',
@@ -17,31 +17,29 @@
 		<option value="{{$name}}" @if($selected == $name) selected @endif>{{$value}}</option>
 		@endforeach
 	</select>
-	<div id="outputcond"></div>
+	<div class="outputcond"></div>
 </div>
 
 @section('script')
 @parent
-const conditionFields = _$("#condition_fields")
-
+@if($loadScipt === false)
 window.ConponentCondition = {}
 
-function ifit(remove){
+function ifit(conditionFields, remove){
 	if(remove === true) {
-		let span = conditionFields.find('#text2')
+		let span = conditionFields.find('.text2')
 		span.remove()
 	} else {
 		let span = _$('<span>')
-		span.attr('id', 'text2')
-		span.addClass('input-group-text')
+		span.addClass('input-group-text', 'text2')
 		span.html('si es')
-		conditionFields.find('#outputcond').before(span)
+		conditionFields.find('.outputcond').before(span)
 	}
 }
 
-function createSelect(attr, options) {
+function createSelect(conditionFields, attr, options) {
 	var select = _$('<select>'),
-		p = conditionFields.find('#outputcond')
+		p = conditionFields.find('.outputcond')
 	if (!_$.empty(attr)) {
 		select.attr(attr)		
 	}
@@ -69,23 +67,27 @@ function createSelect(attr, options) {
 
 var change = function(){
 	let type = _$(this).val()
-	console.log(type)
-	if (conditionFields.find('#text2').length === 0 && ['url', 'index'].indexOf(type) === -1) {
-		ifit(false)
-	} else if(conditionFields.find('#text2').length > 0 && ['url', 'index'].indexOf(type) > -1) {
-		ifit(true)
+	const conditionFields = _$(_$(this).parent())
+	const outputcond = conditionFields.find('.outputcond')
+	console.log(type);
+	if (conditionFields.find('.text2').length === 0 && ['url', 'index'].indexOf(type) === -1) {
+		ifit(conditionFields, false)
+	} else if(conditionFields.find('.text2').length > 0 && ['url', 'index'].indexOf(type) > -1) {
+		ifit(conditionFields, true)
 	}
 	switch(type) {
 		case 'category':
 		if (!_$.hasProp(ConponentCondition, 'selectedCategories')) {
-			ConponentCondition.selectedCategories = createSelect({
+			ConponentCondition.selectedCategories = createSelect(conditionFields,
+			{
 				name:'condition[condition][category]'
 			},{/* List Category via Ajax */})
 		}/* else axios.get()*/
 		break;
 		case 'archive': 
 		if (!_$.hasProp(ConponentCondition, 'selectedArchive')) {
-			ConponentCondition.selectedArchive = createSelect({
+			ConponentCondition.selectedArchive = createSelect(conditionFields,
+			{
 				name:'condition[condition][archive]'
 			},{
 				'singlepost':'Entradas',
@@ -94,26 +96,29 @@ var change = function(){
 				'tags': 'Etiquetas'	
 			})
 		} else {
-			_$('#outputcond').html(ConponentCondition.selectedArchive.Elem[0])	
+			outputcond.html(ConponentCondition.selectedArchive.Elem[0])	
 		}
 		break;
 		case 'post': 
 		if (!_$.hasProp(ConponentCondition, 'selectedPost')) {
-			ConponentCondition.selectedPost = createSelect({
+			ConponentCondition.selectedPost = createSelect(conditionFields,
+			{
 				name:'condition[condition][post]'
 			},{/* List Post via Ajax */})
 		}/* else axios.get()*/
 		break;
 		case 'custom_post': 
 		if (!_$.hasProp(ConponentCondition, 'selectedCustomPost')) {
-			ConponentCondition.selectedCustomPost = createSelect({
+			ConponentCondition.selectedCustomPost = createSelect(conditionFields,
+			{
 				name:'condition[condition][custompost]'
 			},{/* List Custom Post via Ajax */})
 		}/* else axios.get()*/
 		break;
 		case 'byid': 
 		if (!_$.hasProp(ConponentCondition, 'selectedCustomPost')) {
-			ConponentCondition.selectedCustomPost = createSelect({
+			ConponentCondition.selectedCustomPost = createSelect(conditionFields,
+			{
 				name:'condition[condition][byid]'
 			},{/* List Custom Post via Ajax */})
 		}/* else axios.get()*/
@@ -121,7 +126,8 @@ var change = function(){
 	}
 }
 
-change.call(_$("#condition_type").Elem[0], null)
+change.call(_$(".condition_type").Elem[0], null)
 
-_$("#condition_type").change(change)
+_$(".condition_type").change(change)
+@endif
 @endsection

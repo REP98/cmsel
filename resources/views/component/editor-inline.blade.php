@@ -7,7 +7,5 @@
 @endforeach
 @endif
 >
-	@if(!empty($content))
-	{!! $content !!}
-	@endif
+
 </div>

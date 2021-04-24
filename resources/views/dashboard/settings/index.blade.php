@@ -16,7 +16,7 @@
 @endif
 
 <h3 class="w-auto d-inline-flex">{{__('Configuraciones')}}</h3>
-<button id="save-setting" class="d-inline-flex btn btn-outline-success sticky-top float-end">
+<button id="save-setting" type="submit" class="d-inline-flex btn btn-outline-success sticky-top float-end">
 	<i class="fa fa-save me-1"></i>
 	<span class="d-block-md">{{__('Guardar')}}</span>
 </button>
@@ -61,11 +61,15 @@
 					</div>
 					<div class="card-body">
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" name="general[site_title]" placeholder="{{__('Ingreser titulo de sitio')}}" value="{{$setting->general('site_title')}}">
+							<input type="text" class="form-control" name="general[site_title]" placeholder="{{__('Ingrese titulo de sitio')}}" value="{{$setting->general('site_title')}}">
 							<label for="site_title">{{__('Titulo del Sitio Web')}}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<textarea class="form-control" name="general[site_description]" maxlength="200" placeholder="{{__('Descripción del Sitio Web')}}" value="{{$setting->general('site_description')}}"></textarea>
+							<input type="url" class="form-control" name="general[site_url]" placeholder="{{__('Ingrese la URL del sitio')}}" value="{{$setting->general('site_url')}}">
+							<label for="site_url">{{__('URL del Sitio Web')}}</label>
+						</div>
+						<div class="form-floating mb-3">
+							<textarea class="form-control" name="general[site_description]" maxlength="200" placeholder="{{__('Descripción del Sitio Web')}}">{{$setting->general('site_description')}}</textarea>
 							<label for="site_title">{{__('Descripción del Sitio Web')}}</label>
 						</div>
 					</div>
@@ -95,6 +99,7 @@
 						<h5 class="card-title mb-0">{{__('Páginas')}}</h5>
 					</div>
 					<div class="card-body">
+						
 						@empty((array) $setting->pages())
 						<h5>No hay páginas listadas <a href="#" id="getpage">Desea agregar una?</a></h5>
 						<div id="showlistpage">
@@ -117,6 +122,33 @@
 						</div>
 						@else
 						<h5>Lista de Páginas</h5>
+						<div class="accordion accordion-flush" id="listpage">
+						@php
+						$e = 0;
+						$endPage = count((array) $setting->pages());
+						@endphp
+						@foreach($setting->pages() as $page => $condition)
+						@php
+							$p = \App\Models\Page::find($page);
+							$conditions = $condition;
+							$conditions['loadScipt'] = $e > 0;
+							$conditions['edit'] = true;
+							$e++;
+						@endphp
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="heading{{$e}}">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$e}}" aria-expanded="true" aria-controls="collapse{{$e}}">
+								{{$p->title}}
+								</button>
+							</h2>
+							<div id="collapse{{$e}}" class="accordion-collapse collapse" aria-labelledby="heading{{$e}}" data-bs-parent="#listpage">
+								<div class="accordion-body">
+									@include('component.condition_fields', $conditions)
+								</div>
+							</div>
+						</div>						
+						@endforeach
+						</div>
 						@endif
 					</div>
 				</div>
@@ -242,6 +274,7 @@
 		</div>
 	</div>
 </div>
+
 @php
 
 @endphp
@@ -257,15 +290,17 @@ TabA.tab()
 
 TabA.click(function(){
 	location.hash = _$(this).attr('href')
+	_$('#save-setting').data('active', _$(this).attr('href').replace('#', ''))
 })
 
 if(!_$.empty(hash.trim())){
 	_$.bs.Tab.getInstance(_$(`#collapsemenu a[href='${hash}']`).Elem[0]).show()
 }
-_$('#lfm').lfm()
 
-let slp = _$('#showlistpage').collapse()
-slp.data('collapse').hide()
+if(_$('#showlistpage').length > 0){
+	let slp = _$('#showlistpage').collapse()
+	slp.data('collapse').hide()
+}
 
 _$('a#getpage').click(function(e){
 e.preventDefault()
@@ -280,6 +315,35 @@ e.preventDefault()
 		})
 })
 
+window.settings = {
+	_getFiels: function(children){
+		let configs= {};
+
+		children.each(function(el) {
+			let re = /(\w+)\[(\w+)\]/gi.exec(el.name)
+			if (!_$.empty(re)) {
+				let r = Array.from(re);
+				if (!_$.hasProp(configs, r[1])) {
+					configs[r[1]] = {}
+				}
+
+				configs[r[1]][r[2]] = el.value
+			}
+		})
+		return configs;
+	},
+	general: function(){
+		let general = @json($setting->general());
+		let fields = _$("#general").find('input,textarea')
+		axios.post(_$.Route('setting.set'), {
+			param:this._getFiels(fields)
+		}).then(res => {
+			console.log(res);
+		})
+	}
+}
+
+/*
 _$('#save-setting').click(function(){
 	let i = _$(_$(this).find('i'))
 	let text = _$(_$(this).find('span'))
@@ -299,5 +363,5 @@ _$('#save-setting').click(function(){
 		}
 	})
 	console.log(configs)
-})
+})*/
 @endsection

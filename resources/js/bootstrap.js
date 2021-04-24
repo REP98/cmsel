@@ -35,7 +35,6 @@ _$.bs = bs
  * @return {HTMLTable}
  */
 function setDataFromJson(el, data, exclude = [], transform = {}) {
-	console.log(data, exclude, transform)
 
 	if (_$.empty(el) || _$.empty(data)) {
 		return el
@@ -206,13 +205,18 @@ _$().__proto__.dataTable = function(options){
 				sortable:false,
 				render: function(data, cell, row){
 					let id = _$(row).data('slug')
+					let type = _$(_$(row).parents('table')).data('type')
 					return `<div class="actions d-flex justify-content-center w-100">
-					<a href="${_$.Route('page.edit', [id])}" class="fg-dark fg-green-hover">
+					<a href="${_$.Route(type+'.edit', [id])}" class="btn fg-dark fg-green-hover">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
 					</a>
-					<a href="#popupdelete?delete=${id}" class="fg-dark fg-red-hover">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash align-middle"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-					</a>
+					<from action="${_$.Route(type+'.destroy', [id])}" method="post">
+						<input type="hidden" name="_token" value="${_$('meta[name="csrf-token"').attr('content')}">
+						<input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn fg-dark fg-red-hover">
+                        	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash align-middle"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+					</form>
 					</div>
 					`
 				}

@@ -39,6 +39,7 @@ class PageController extends Controller
 					'name' => 'Añadir Página'
 				]
 			],
+			'dataTableType' => 'page',
 			'dataTable' => Page::with('users')->get(),
 			'dataTableExclude' => [
 				"created_at", 
@@ -102,9 +103,9 @@ class PageController extends Controller
 					->withErrors($valid)
 					->withInput();
 		}
-
-		if(!array_key_exists('condition', $request->condition)) {
-			$request->condition['condition'] = [];
+		$conditon = [];
+		if(array_key_exists('condition', $request->condition)) {
+			$conditon = $request->condition['condition'];
 		}
 
 		$user = User::find(auth()->user()->id);
@@ -134,7 +135,7 @@ class PageController extends Controller
 		$style->level = 'page-'.$page->id;
 		$style->pages()->attach($page->id);
 		
-		$this->Setting->pages($page->id, $request->condition);
+		$this->Setting->pages($page->id, ['type'=>$request->condition['type'], 'condition' => $conditon]);
 
 		return redirect()
 			->route('page.edit', [$page->slug])
@@ -264,7 +265,13 @@ class PageController extends Controller
 	 */
 	public function destroy(Page $Page)
 	{
-		debug($Page);
+		$title = $Page->title;
+		$Page->styles()->delete();
+		$Page->delete();
+		return redirect()
+			->route('page.index')
+			->with('status', 'Página '.$title.' borrada');
+	
 	}
 
 	public function getJson($id = null) {
@@ -284,3 +291,6 @@ class PageController extends Controller
 		return $body;	
 	}
 }
+/*
+moreiefn 
+SXsheSLNy6hE*/
