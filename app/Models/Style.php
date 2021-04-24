@@ -44,7 +44,7 @@ class Style extends Model
 
     public function pages(): BelongsToMany
     {
-    	return $this->belongsToMany(Template::class)->withTimestamps();
+    	return $this->belongsToMany(Page::class)->withTimestamps();
     }
 
     public function posts(): BelongsToMany

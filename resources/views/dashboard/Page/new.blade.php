@@ -131,7 +131,7 @@ _$("#css-codeditor").data('code').getDoc().setValue('/*-- Código CSS para el p�
 _$("#js-codeditor").data('code').getDoc().setValue('/** Código JS para la página */\n')
 
 @else
-tinyMCE.activeEditor.setContent(`{!! $page->content !!}`)
+tinyMCE.activeEditor.setContent(`{!! html_entity_decode($page->content) !!}`)
 @endempty
 
 var delay, tmcDelay
@@ -169,7 +169,11 @@ _$('form#page').on('submit', function(e){
 	_$('input[name="content"]').val(encodeURIComponent(tiny.trim()))
 	_$('input[name="css"]').val(encodeURIComponent(css.trim()))
 	_$('input[name="js"]').val(encodeURIComponent(js.trim()))
-		
-	this.submit()
+	if(_$.isFunction(this.submit)){
+		this.submit()
+	} else if(_$.isFunction(this._mceOldSubmit)) {
+		this._mceOldSubmit()
+	}
+	
 })
 @endsection

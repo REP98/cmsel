@@ -53,15 +53,18 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 		Route::get('/editor', function(){ return 'PÁGINA DE EDICION'; })->name('editors')->middleware(['permission:ap_config_manage read create']);
 
 		Route::get('/test/{view}', [App\Http\Controllers\DashboardController::class, 'test']);
+		
 		// Pages and Template
-		Route::resources([
-			'page' => \App\Http\Controllers\PageController::class,
-			'templante' => \App\Http\Controllers\TemplateController::class
-		])->middleware(['permission:ap_page read']);
-
-		Route::get('/template/{type}', [\App\Http\Controllers\TemplateController::class, 'indextype'])->middleware(['permission:ap_page read']);
+		Route::get('/template/{type}', [\App\Http\Controllers\TemplateController::class, 'indextype'])->name('template.indextype')->middleware(['permission:ap_page read']);
+		Route::get('/template/{type}/create', [\App\Http\Controllers\TemplateController::class, 'createbytype'])->name('template.newtype')->middleware(['permission:ap_page read']);
 
 		Route::get('/page/listtojson', [\App\Http\Controllers\PageController::class, 'getJson'])->name('page.tojson');
+		
+		Route::resources([
+			'page' => \App\Http\Controllers\PageController::class,
+			'template' => \App\Http\Controllers\TemplateController::class
+		]);
+
 		// Medios
 		Route::group(['prefix' => 'filemanager', 'middleware' => ['auth:sanctum', 'permission:ap_sessions_admin']], function () {
 			\UniSharp\LaravelFilemanager\Lfm::routes();
@@ -75,14 +78,6 @@ Route::middleware(['auth:sanctum', 'verified', 'permission:ap_sessions_admin'])-
 			Route::get('/tags', function(){ return 'PAGINA DE ETIQUETAS'; })->name('post.tag')->middleware(['permission:ap_post_tag create']);
 		});
 
-		// Plantillas
-		Route::prefix('template')->middleware(['permission:ap_page read'])->group(function(){
-			Route::get('/', function(){ return 'PÁGINA DE PLANTILLAS'; })->name('template');
-			Route::get('/header', function(){ return 'CABEZERAS'; })->name('template.header')->middleware(['permission:create']);
-			Route::get('/sections', function(){ return 'SECCIONES'; })->name('template.section')->middleware(['permission:create']);
-			Route::get('/footer', function(){ return 'PIE'; })->name('template.footer')->middleware(['permission:create']);
-			Route::get('/widget', function(){ return 'widget'; })->name('template.widget')->middleware(['permission:create']);
-		});
 
 		// Usuarios
 		Route::prefix('user')->middleware(['permission:ap_user_manager read'])->group(function(){

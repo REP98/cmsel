@@ -68,6 +68,33 @@ const routes = {
     "page.destroy": {
         "uri": "dashboard\/page\/{page}"
     },
+    "template.index": {
+        "uri": "dashboard\/template"
+    },
+    "template.create": {
+        "uri": "dashboard\/template\/create"
+    },
+    "template.store": {
+        "uri": "dashboard\/template"
+    },
+    "template.show": {
+        "uri": "dashboard\/template\/{template}"
+    },
+    "template.edit": {
+        "uri": "dashboard\/template\/{template}\/edit"
+    },
+    "template.update": {
+        "uri": "dashboard\/template\/{template}"
+    },
+    "template.destroy": {
+        "uri": "dashboard\/template\/{template}"
+    },
+    "template.indextype": {
+        "uri": "dashboard\/template\/{type}"
+    },
+    "template.newtype": {
+        "uri": "dashboard\/template\/{type}\/create"
+    },
     "page.tojson": {
         "uri": "dashboard\/page\/listtojson"
     },
@@ -133,21 +160,6 @@ const routes = {
     },
     "post.tag": {
         "uri": "dashboard\/post\/tags"
-    },
-    "template": {
-        "uri": "dashboard\/template"
-    },
-    "template.header": {
-        "uri": "dashboard\/template\/header"
-    },
-    "template.section": {
-        "uri": "dashboard\/template\/sections"
-    },
-    "template.footer": {
-        "uri": "dashboard\/template\/footer"
-    },
-    "template.widget": {
-        "uri": "dashboard\/template\/widget"
     },
     "user": {
         "uri": "dashboard\/user"
